@@ -1282,7 +1282,7 @@ public class Main {
 }
 
 
-public class RandomizedSet {
+class RandomizedSet {
     private Map<Integer, Integer> indexToVal;
     private Map<Integer, Integer> valToIndex;
     public RandomizedSet() {
