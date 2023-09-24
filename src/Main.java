@@ -1279,6 +1279,40 @@ public class Main {
 
         return ugly;
     }
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        // write your code here
+        List<List<Integer>> results = new ArrayList<>();
+        List<Integer> combine = new ArrayList<>();
+        combineDFS(candidates, target, combine, results, 0);
+        return results;
+    }
+
+    private void combineDFS(int[] candidates,
+                            int target,
+                            List<Integer> combine,
+                            List<List<Integer>> results,
+                            int index) {
+        if (index == candidates.length) {
+            return;
+        }
+
+        if (target == 0) {
+            List<Integer> ans = new ArrayList<>(combine);
+            Collections.sort(ans);
+            if (!results.contains(ans)) {
+                results.add(ans);
+            }
+            return;
+        }
+
+        combineDFS(candidates, target, combine, results, index + 1);
+        if (target - candidates[index] >= 0) {
+            combine.add(candidates[index]);
+            combineDFS(candidates, target - candidates[index], combine, results, index);
+            combine.remove(combine.size() - 1);
+        }
+    }
 }
 
 
