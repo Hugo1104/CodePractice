@@ -1313,31 +1313,42 @@ public class Main {
             combine.remove(combine.size() - 1);
         }
     }
-}
 
+    public List<String> stringPermutation2(String str) {
+        // write your code here
+        List<String> results = new ArrayList<>();
 
-class RandomizedSet {
-    private Map<Integer, Integer> indexToVal;
-    private Map<Integer, Integer> valToIndex;
-    public RandomizedSet() {
-        // do intialization if necessary
-        indexToVal = new HashMap<>();
-        valToIndex = new HashMap<>();
+        if (str == null) {
+            return results;
+        }
+
+        char[] chars = str.toCharArray();
+        Arrays.sort(chars);
+        boolean[] visited = new boolean[chars.length];
+
+        strPermutationDFS(chars, "", visited, results);
+        return results;
     }
 
-    /*
-     * @param val: a value to the set
-     * @return: true if the set did not already contain the specified element or false
-     */
-    public boolean insert(int val) {
-        // write your code here
-        if (valToIndex.containsKey(val)) {
-            return false;
+    private void strPermutationDFS(char[] chars, String permutation, boolean[] visited, List<String> results) {
+        if (permutation.length() == chars.length) {
+            results.add(permutation);
+            return;
         }
-        int index = valToIndex.size();
-        valToIndex.put(val, index);
-        indexToVal.put(index,val);
-        return true;
+
+        for (int i = 0; i < chars.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+
+            if (i > 0 && chars[i - 1] == chars[i] && !visited[i - 1]) {
+                continue;
+            }
+
+            visited[i] = true;
+            strPermutationDFS(chars, permutation + chars[i], visited, results);
+            visited[i] = false;
+        }
     }
 
     public int kthSmallest(TreeNode root, int k) {
@@ -1358,6 +1369,149 @@ class RandomizedSet {
 
         return root.val;
     }
+
+    public void nextPermutation(int[] nums) {
+        int i = nums.length - 2;
+
+        while (i >= 0 && nums[i + 1] <= nums[i]) {
+            i--;
+        }
+
+        if (i >= 0) {
+            int j = nums.length - 1;
+            while (nums[i] >= nums[j]) {
+                j--;
+            }
+            swap(nums, i, j);
+        }
+        reverse(nums, i + 1);
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    private void reverse(int[] nums, int start) {
+        int i = start, j = nums.length - 1;
+        while (i < j) {
+            swap(nums, i, j);
+            i++;
+            j--;
+        }
+    }
+
+    public List<List<Integer>> kSumII(int[] a, int k, int target) {
+        // write your code here
+        List<List<Integer>> results = new ArrayList<>();
+        if (a.length < 1) {
+            return results;
+        }
+        Arrays.sort(a);
+        List<Integer> result = new ArrayList<>();
+        ksumIIDFS(a, k, target, 0, result, results);
+        return results;
+    }
+    
+    private void ksumIIDFS(int[] a,
+                           int k,
+                           int target,
+                           int index,
+                           List<Integer> result,
+                           List<List<Integer>> results) {
+        if (result.size() == k && target == 0) {
+            results.add(new ArrayList<>(result));
+            return;
+        }
+
+        if (target == 0) {
+            return;
+        }
+
+        for (int i = index; i < a.length; i++) {
+            if (a[i] > target) {
+                break;
+            }
+            result.add(a[i]);
+            ksumIIDFS(a, k, target - a[i], i + 1, result, results);
+            result.remove(result.size() - 1);
+        }
+    }
+
+
+    public List<String> letterCombinations(String digits) {
+        // write your code here
+        List<String> results = new ArrayList<>();
+        if (digits.length() == 0) {
+            return results;
+        }
+
+        Map<Character, String> map = new HashMap<>() {{
+            put('2', "abc");
+            put('3', "def");
+            put('4', "ghi");
+            put('5', "jkl");
+            put('6', "mno");
+            put('7', "pqrs");
+            put('8', "tuv");
+            put('9', "wxyz");
+        }};
+
+        StringBuffer str = new StringBuffer();
+        letterCombinationDFS(digits, map, 0, str, results);
+        return results;
+    }
+
+    private void letterCombinationDFS(String digits,
+                                      Map<Character, String> map,
+                                      int index,
+                                      StringBuffer ans,
+                                      List<String> results) {
+        if (index == digits.length()) {
+            results.add(ans.toString());
+            return;
+        }
+
+        char digit = digits.charAt(index);
+        String letters = map.get(digit);
+        for (int i = 0; i < letters.length(); i++) {
+            ans.append(letters.charAt(i));
+            letterCombinationDFS(digits, map, index + 1, ans, results);
+            ans.deleteCharAt(ans.length() - 1);
+        }
+    }
+
+
+
+
+}
+
+
+class RandomizedSet {
+    private Map<Integer, Integer> indexToVal;
+    private Map<Integer, Integer> valToIndex;
+    public RandomizedSet() {
+        // do initialization if necessary
+        indexToVal = new HashMap<>();
+        valToIndex = new HashMap<>();
+    }
+
+    /*
+     * @param val: a value to the set
+     * @return: true if the set did not already contain the specified element or false
+     */
+    public boolean insert(int val) {
+        // write your code here
+        if (valToIndex.containsKey(val)) {
+            return false;
+        }
+        int index = valToIndex.size();
+        valToIndex.put(val, index);
+        indexToVal.put(index,val);
+        return true;
+    }
+
 
     /*
      * @param val: a value from the set
