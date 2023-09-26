@@ -4,7 +4,9 @@ import java.util.*;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        kthLargestElement(2, new int[]{1, 2, 5, 3, 4});
+        int[] A = {1,2,3};
+        int[] B = {4, 5};
+        mergeSortedArray(A, 3, B, 2);
     }
 
     public String longestPalindrome(String s) {
@@ -1447,7 +1449,7 @@ public class Main {
             return results;
         }
 
-        Map<Character, String> map = new HashMap<>() {{
+        Map<Character, String> map = new HashMap<Character, String>() {{
             put('2', "abc");
             put('3', "def");
             put('4', "ghi");
@@ -1527,6 +1529,35 @@ public class Main {
         return n % 4 != 0;
     }
 
+
+    public static void mergeSortedArray(int[] A, int m, int[] B, int n) {
+        // write your code here
+        int[] result = new int[m + n];
+        int i = 0, j = 0;
+        while (i < m && j < n) {
+            if (A[i] <= B[j]) {
+                result[i + j] = A[i];
+                i++;
+            } else {
+                result[i + j] = B[j];
+                j++;
+            }
+        }
+
+        while (i < m) {
+            result[i + j] = A[i];
+            i++;
+        }
+
+        while (j < n) {
+            result[i + j] = B[j];
+            j++;
+        }
+
+        for (int k = 0; k < m + n; k++) {
+            A[k] = result[k];
+        }
+    }
 
 
 
