@@ -1482,6 +1482,51 @@ public class Main {
         }
     }
 
+    public int minimumTotal(int[][] triangle) {
+        // write your code here
+        boolean[][] visited = new boolean[triangle.length][];
+        int[][] memo = new int[triangle.length][];
+
+        for (int i = 0; i < triangle.length; i++) {
+            visited[i] = new boolean[triangle[i].length];
+            memo[i] = new int[triangle[i].length];
+        }
+
+        return triangleHelper(triangle, 0, 0, visited, memo);
+    }
+
+    public int triangleHelper(int[][] triangle, int row, int column, boolean[][] visited, int[][] memo) {
+        if (visited[row][column]) {
+            return memo[row][column];
+        }
+
+        int number = triangle[row][column];
+
+        if (row + 1 == triangle.length) {
+            return number;
+        }
+
+        int leftNum = triangleHelper(triangle, row + 1, column, visited, memo);
+        int rightNum = triangleHelper(triangle, row + 1, column + 1, visited, memo);
+        int result = 0;
+
+        if (leftNum < rightNum) {
+            result = number + leftNum;
+        } else {
+            result = number + rightNum;
+        }
+
+        visited[row][column] = true;
+        memo[row][column] = result;
+
+        return result;
+
+    }
+
+    public boolean canWinBash(int n) {
+        return n % 4 != 0;
+    }
+
 
 
 
