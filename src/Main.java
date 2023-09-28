@@ -1655,6 +1655,108 @@ public class Main {
         }
     }
 
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        // write your code here
+        if (obstacleGrid.length == 0 || obstacleGrid == null) {
+            return 0;
+        }
+
+        int n = obstacleGrid.length, m = obstacleGrid[0].length;
+        int[][] dp = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
+            if (obstacleGrid[i][0] == 1) {
+                break;
+            }
+            dp[i][0] = 1;
+        }
+
+        for (int j = 0; j < m; j++) {
+            if (obstacleGrid[0][j] == 1) {
+                break;
+            }
+            dp[0][j] = 1;
+        }
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < m; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    continue;
+                }
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+
+        return dp[n - 1][m - 1];
+    }
+
+    public int shortestPath2DP(boolean[][] grid) {
+        // write your code here
+        int[] deltaX = {1, -1, 2, -2};
+        int[] deltaY = {-2, -2, -1, -1};
+
+        if (grid.length == 0 || grid == null) {
+            return -1;
+        }
+
+        int n = grid.length, m = grid[0].length;
+        int[][] dp = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        dp[0][0] = 0;
+
+        for (int j = 0; j < m; j++) {
+            for (int i = 0; i < n; i++) {
+                if (grid[i][j]) {
+                    continue;
+                }
+
+                for (int direction = 0; direction < 4; direction++) {
+                    int x = i + deltaX[direction];
+                    int y = j + deltaY[direction];
+                    if (x < 0 || x >= n || y < 0 || y >= m) {
+                        continue;
+                    }
+                    if (dp[x][y] == Integer.MAX_VALUE) {
+                        continue;
+                    }
+
+                    dp[i][j] = Math.min(dp[i][j], dp[x][y] + 1);
+                }
+            }
+        }
+
+        return dp[n - 1][m - 1] == Integer.MAX_VALUE ? -1 : dp[n - 1][m - 1];
+    }
+
+    public boolean canJump(int[] a) {
+        // write your code here
+        if (a == null) {
+            return false;
+        }
+
+        int n = a.length;
+        boolean[] dp = new boolean[n];
+        dp[0] = true;
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && a[j] + j >= i) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+
+        return dp[n - 1];
+
+    }
+
 
 
 
