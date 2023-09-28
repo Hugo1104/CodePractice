@@ -1,3 +1,5 @@
+import sun.awt.image.ImageWatched;
+
 import java.util.*;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -1558,6 +1560,102 @@ public class Main {
             A[k] = result[k];
         }
     }
+
+    public void invertBinaryTree(TreeNode root) {
+        // write your code here
+        if (root == null) {
+            return;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode node =  queue.poll();
+            TreeNode temp = node.left;
+            node.left = node.right;
+            node.right = temp;
+
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+        }
+    }
+
+    public List<String> wordSearchII(char[][] board, List<String> words) {
+        // write your code here
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+
+        Set<String> ans = new HashSet<String>();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                wordSearchIIDFS(board, trie, i, j, ans, dirs);
+            }
+        }
+
+        return new ArrayList<String>(ans);
+    }
+
+    private void wordSearchIIDFS(char[][] board, Trie trie, int i, int j, Set<String> ans, int[][] dirs) {
+        if (!trie.children.containsKey(board[i][j])) {
+            return;
+        }
+
+        char c = board[i][j];
+        Trie next = trie.children.get(c);
+
+        if (!"".equals(next.word)) {
+            ans.add(next.word);
+            next.word = "";
+        }
+
+        if (!next.children.isEmpty()) {
+            board[i][j] = '#';
+            for (int[] dir : dirs) {
+                int x = i + dir[0], y = j + dir[1];
+                if (x >= 0 && x < board.length && y >= 0 && y < board[0].length) {
+                    wordSearchIIDFS(board, next, x, y, ans, dirs);
+                }
+            }
+            board[i][j] = c;
+        }
+
+        if (next.children.isEmpty()) {
+            trie.children.remove(c);
+        }
+    }
+
+    class Trie {
+        String word;
+        Map<Character, Trie> children;
+        boolean isWord;
+
+        public Trie() {
+            this.word = "";
+            this.children = new HashMap<Character, Trie>();
+        }
+
+        public void insert(String word) {
+            Trie cur = this;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                if (!cur.children.containsKey(c)) {
+                    cur.children.put(c, new Trie());
+                }
+                cur = cur.children.get(c);
+            }
+            cur.word = word;
+        }
+    }
+
+
 
 
 
