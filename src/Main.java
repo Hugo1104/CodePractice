@@ -1757,6 +1757,31 @@ public class Main {
 
     }
 
+    public int backPack(int m, int[] a) {
+        // write your code here
+        int n = a.length;
+
+        boolean[][] dp = new boolean[n + 1][m + 1];
+
+        dp[0][0] = true;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (j >= a[i - 1]) {
+                    dp[i][j] = dp[i][j] || dp[i - 1][j - a[i - 1]];
+                }
+            }
+        }
+
+        for (int i = m; i >= 0 ; i--) {
+            if (dp[n][i]) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 
 
 
