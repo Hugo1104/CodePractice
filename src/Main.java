@@ -1782,6 +1782,73 @@ public class Main {
         return 0;
     }
 
+    private class DataStream {
+        private class Node {
+            public Node next;
+            public int value;
+            public Node(int value) {
+                this.value = value;
+                this.next = null;
+            }
+        }
+
+        private HashMap<Integer, Node> hashmap;
+        private Node dummpy;
+        private Node cur;
+        public DataStream() {
+            hashmap = new HashMap<Integer, Node>();
+            dummpy = new Node(0);
+            cur = dummpy;
+        }
+
+        public void add(int value) {
+            if(!hashmap.containsKey(value)) {
+                Node node = new Node(value);
+                cur.next = node;
+                hashmap.put(value, cur);
+                cur = cur.next;
+            } else {
+                // contains duplicate key;
+                Node prev = hashmap.get(value);
+                if(prev != null) {
+                    prev.next = prev.next.next;
+                    if(prev.next != null) {
+                        int prevNextValue = prev.next.value;
+                        hashmap.put(prevNextValue, prev);
+                    } else {
+                        //这里很重要，别忘记了，如果delete掉是最后一个元素，那么cur = prev;
+                        cur = prev;
+                    }
+                    //这里很巧妙的,如果是第二次遇见，那么直接设置node为null,
+                    //但是hashmap里面还是保留key，表示遇见过；
+                    hashmap.put(value, null);
+                }
+            }
+        }
+
+        public int getFirstUnique() {
+            if(dummpy.next != null) {
+                return dummpy.next.value;
+            } else {
+                return -1;
+            }
+        }
+    }
+
+    public int firstUniqueNumber(int[] nums, int number) {
+        if(nums == null || nums.length == 0) {
+            return -1;
+        }
+        DataStream ds = new DataStream();
+        for(int i = 0; i < nums.length; i++) {
+            ds.add(nums[i]);
+            if(nums[i] == number){
+                return ds.getFirstUnique();
+            }
+        }
+        return -1;
+    }
+
 
 
 
