@@ -1850,6 +1850,136 @@ public class Main {
     }
 
 
+    public int backPackII(int m, int[] a, int[] v) {
+        // write your code here
+        int n = a.length;
+        int[][] dp = new int[n + 1][m + 1];
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 0;
+                } else if (a[i - 1] > j ) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - a[i - 1]] + v[i - 1]);
+                }
+            }
+        }
+
+        return dp[n][m];
+    }
+
+
+    public int backPackV(int[] nums, int target) {
+        // write your code here
+        int n = nums.length;
+
+        if (n == 0) {
+            return 0;
+        }
+
+        int[][] dp = new int[n + 2][target + 2];
+
+        for (int i = 0; i <= target; i++) {
+            if (i == 0) {
+                dp[0][i] = 1;
+            } else {
+                dp[0][i] = 0;
+            }
+        }
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= target; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (j >= nums[i - 1]) {
+                    dp[i][j] += dp[i - 1][j - nums[i - 1]];
+                }
+            }
+        }
+
+        return dp[n][target];
+    }
+
+
+    public int wordBreak3(String s, Set<String> dict) {
+        // Write your code here
+        if (s.length() == 0 || dict.size() == 0) {
+            return 0;
+        }
+
+        s = s.toLowerCase();
+        Set<String> set = new HashSet<>();
+        for (String str : dict) {
+            set.add(str.toLowerCase());
+        }
+
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        
+        dp[0] = 1;
+
+        for (int i = 0; i < len; i++) {
+            for (int j = i; j < len; j++) {
+                if (set.contains(s.substring(i, j + 1))) {
+                    dp[j + 1] += dp[i];
+                }
+            }
+        }
+
+        return dp[len];
+    }
+
+    public int climbStairs2(int n) {
+        // write your code here
+        if (n <= 1) {
+            return 1;
+        }
+
+        if (n == 2) {
+            return 2;
+        }
+
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        dp[2] = 2;
+
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+        }
+
+        return dp[n];
+    }
+
+
+    public int[] winSum(int[] nums, int k) {
+        // write your code here
+        if (k == 0) {
+            return new int[0];
+        }
+
+        int n = nums.length;
+        int[] results = new int[n - k + 1];
+
+        int left = 0, right = k - 1, sum = 0;
+        for (int i = 0; i <= right; i++) {
+            sum += nums[i];
+        }
+
+        int index = 0;
+        results[index++] = sum;
+
+        while (right < n - 1) {
+            sum -= nums[left];
+            left++;
+            right++;
+            sum += nums[right];
+            results[index++] = sum;
+        }
+        return results;
+    }
+
+
 
 
 
