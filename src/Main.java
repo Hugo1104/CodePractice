@@ -1979,10 +1979,112 @@ public class Main {
         return results;
     }
 
+    public int gcd(int a, int b) {
+        // write your code here
+        int smaller = Math.min(a, b);
+        int gcd = 0;
+        for (int i = 1; i <= smaller; i++) {
+            if (a % i == 0 && b % i == 0) {
+                gcd = i;
+            }
+        }
+        return gcd;
+    }
+
+    public int longestIncreasingSubsequence(int[] nums) {
+        // write your code here
+        if (nums.length == 0) {
+            return 0;
+        }
+
+        int[] dp = new int[nums.length];
+        dp[0] = 1;
+        int ans = 1;
+
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            ans = Math.max(ans, dp[i]);
+        } 
+        return ans;
+    }
+
+    public List<Interval> mergeKSortedIntervalLists(List<List<Interval>> intervals) {
+        // write your code here
+        if (intervals.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        List<Interval> list = new ArrayList<>();
+
+        for (List<Interval> interval : intervals) {
+            list.addAll(interval);
+        }
+
+        list.sort((Interval a, Interval b) -> a.start - b.start);
+        List<Interval> ans = new ArrayList<>();
+        ans.add(list.get(0));
+        for (int i = 1; i < list.size(); i++) {
+            int lastPos = ans.size() - 1;
+            if (ans.get(lastPos).end >= list.get(i).start) {
+                ans.get(lastPos).end = Math.max(ans.get(lastPos).end, list.get(i).end);
+            } else {
+                ans.add(list.get(i));
+            }
+        }
+        return ans;
+    }
+
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        // write your code here
+        if (nums.length == 0) {
+            return new ArrayList<>();
+        }
+
+        Arrays.sort(nums);
+
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        int[] dp = new int[nums.length];
+        int globalMaxIndex = 0, globalMaxCount = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            map.put(i, new ArrayList<>());
+            int preIndex = 0;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] % nums[j] == 0) {
+                    if (dp[i] < dp[j] + 1) {
+                        dp[i] = dp[j] + 1;
+                        preIndex = j;
+                    }
+                }
+            }
+
+            if (dp[i] != 0) {
+                map.get(i).addAll(map.get(preIndex));
+            }
+            map.get(i).add(nums[i]);
+            if (dp[i] > globalMaxCount) {
+                globalMaxCount = dp[i];
+                globalMaxIndex = i;
+            }
+        }
+
+        return map.get(globalMaxIndex);
+    }
 
 
+}
 
-
+class Interval {
+    int start, end;
+    Interval(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
 }
 
 class LRUCache {
