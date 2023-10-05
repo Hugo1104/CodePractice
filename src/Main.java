@@ -2076,6 +2076,23 @@ public class Main {
         return map.get(globalMaxIndex);
     }
 
+    public int deduplication(int[] nums) {
+        // write your code here
+        if (nums.length == 0) {
+            return 0;
+        }
+
+        Arrays.sort(nums);
+        int first = 0;
+        for (int second = 0; second < nums.length; second++) {
+            if (second == 0 || nums[second] != nums[second - 1]) {
+                nums[first++] = nums[second];
+            }
+        }
+
+        return first;
+    }
+
 
 }
 
