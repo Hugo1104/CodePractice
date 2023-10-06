@@ -2093,6 +2093,42 @@ public class Main {
         return first;
     }
 
+    public String sumofTwoStrings(String a, String b) {
+        // write your code here
+        if (a.length() == 0) {
+            return b;
+        }
+
+        if (b.length() == 0) {
+             return a;
+        }
+
+        String ans = new String();
+        if (a.length() <= b.length()) {
+             ans = twoStringHelper(a, b).toString();
+        } else {
+             ans = twoStringHelper(b, a).toString();
+        }
+
+        return ans;
+    }
+
+    private StringBuilder twoStringHelper(String shorter, String longer) {
+        int index1 = 0, index2 = 0;
+
+        StringBuilder ans = new StringBuilder();
+        while (index2 < longer.length() - shorter.length()) {
+            ans.append(longer.charAt(index2++));
+        }
+
+        while (index1 < shorter.length()) {
+            int value = Character.getNumericValue(shorter.charAt(index1++)) + Character.getNumericValue(longer.charAt(index2++));
+            ans.append(value);
+        }
+
+        return ans;
+    }
+
 
 }
 
