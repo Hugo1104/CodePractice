@@ -2129,6 +2129,31 @@ public class Main {
         return ans;
     }
 
+    public boolean searchMatrix(int[][] matrix, int target) {
+        // write your code here
+        if (matrix.length == 0) {
+            return false;
+        }
+
+        int m = matrix.length, n = matrix[0].length;
+        int low = 0, high = m * n - 1;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            int num = matrix[mid / n][mid % n];
+
+            if (num < target) {
+                low = mid + 1;
+            } else if (num > target) {
+                high = mid - 1;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
 }
 
