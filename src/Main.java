@@ -2154,6 +2154,54 @@ public class Main {
         return false;
     }
 
+    public int totalOccurrence(int[] a, int target) {
+        // write your code here
+        if (a.length == 0) {
+            return 0;
+        }
+
+        int left = 0, right = a.length - 1;
+
+        while (left + 1 < right) {
+            int mid = (left + right) / 2;
+            if (a[mid] < target) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+
+        int startIndex = 0;
+        if (a[left] == target) {
+            startIndex = left;
+        } else if (a[right] == target) {
+            startIndex = right;
+        } else {
+            return 0;
+        }
+
+        left = 0;
+        right = a.length - 1;
+
+        while (left + 1 < right) {
+            int mid = (left + right) / 2;
+            if (a[mid] > target) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+
+        int endIndex = 0;
+        if (a[right] == target) {
+            endIndex = right;
+        } else if (a[left] == target) {
+            endIndex = left;
+        }
+
+        return endIndex - startIndex + 1;
+    }
+
 
 }
 
