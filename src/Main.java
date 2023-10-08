@@ -2202,6 +2202,31 @@ public class Main {
         return endIndex - startIndex + 1;
     }
 
+    public int threeSumClosest(int[] numbers, int target) {
+        // write your code here
+        Arrays.sort(numbers);
+        int ans = numbers[0] + numbers[1] + numbers[2];
+
+        for (int i = 0; i < numbers.length; i++) {
+            int left = i + 1, right = numbers.length - 1;
+            while (left < right) {
+                int sum = numbers[i] + numbers[left] + numbers[right];
+                if (Math.abs(target - sum) < Math.abs(target - ans)) {
+                    ans = sum;
+                }
+
+                if (sum > target) {
+                    right--;
+                } else if (sum < target) {
+                    left++;
+                } else {
+                    return ans;
+                }
+            }
+        }
+        return ans;
+    }
+
 
 }
 
