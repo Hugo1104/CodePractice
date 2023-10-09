@@ -2227,6 +2227,24 @@ public class Main {
         return ans;
     }
 
+    public void sortColors2(int[] colors, int k) {
+        // write your code here
+        int start = 0;
+        for (int i = 1; i < k; i++) {
+            int pointer = start;
+            while (pointer < colors.length) {
+                if (colors[pointer] != i) {
+                    pointer++;
+                    continue;
+                }
+                int temp = colors[start];
+                colors[start++] = colors[pointer];
+                colors[pointer++] = temp;
+            }
+        }
+    }
+
+
 
 }
 
