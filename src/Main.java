@@ -2245,6 +2245,113 @@ public class Main {
     }
 
 
+    public int[] twoSum7(int[] nums, int target) {
+        // write your code here
+        if (nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+
+        target = Math.abs(target);
+        int j = 1;
+
+        for (int i = 0; i < nums.length; i++) {
+            j = Math.max(i + 1, j);
+            while (j < nums.length && nums[j] - nums[i] < target) {
+                j++;
+            }
+
+            if (j == nums.length) {
+                break;
+            }
+
+            if (nums[j] - nums[i] == target) {
+                return new int[]{nums[i], nums[j]};
+            }
+        }
+
+        return new int[]{-1, -1};
+    }
+
+    public int stringCount(String str) {
+        // Write your code here.
+        if (str.length() == 0) {
+            return 0;
+        }
+
+        int j = 1, ans = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) != '0') {
+                continue;
+            }
+
+            j = Math.max(i + 1, j);
+            while (j < str.length() && str.charAt(j) == '0') {
+                j++;
+            }
+
+            ans += j - i;
+        }
+
+        return ans;
+    }
+
+    public int deduplication2(int[] nums) {
+        // write your code here
+        if (nums.length == 0) {
+            return 0;
+        }
+
+        Arrays.sort(nums);
+
+        int i, j = 1;
+        for (i = 0; i < nums.length; i++) {
+            j = Math.max(i + 1, j);
+            while (j < nums.length && nums[i] == nums[j]) {
+                j++;
+            }
+
+            if (j >= nums.length) {
+                break;
+            }
+
+            nums[i + 1] = nums[j];
+        }
+
+        return i + 1;
+    }
+
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        // write your code here
+        if (s.length() == 0 || k == 0) {
+            return 0;
+        }
+
+        int left = 0, right = 0, count = 0;
+        int[] charSet = new int[256];
+        int ans = 0;
+
+        while (right < s.length()) {
+            if (charSet[s.charAt(right)] == 0) {
+                count++;
+            }
+
+            charSet[s.charAt(right)]++;
+            right++;
+
+            while (count > k) {
+                charSet[s.charAt(left)]--;
+                if (charSet[s.charAt(left)] == 0) {
+                    count--;
+                }
+                left++;
+            }
+
+            ans = Math.max(ans, right - left);
+        }
+
+        return ans;
+    }
+
 
 }
 
