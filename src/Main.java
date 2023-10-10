@@ -2352,6 +2352,109 @@ public class Main {
         return ans;
     }
 
+    public int[] winSumReview(int[] nums, int k) {
+        // write your code here
+        if (nums.length == 0 || k == 0) {
+            return new int[]{};
+        }
+
+        int[] ans = new int[nums.length - k + 1];
+
+        int j = 0, sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            while (j < nums.length && j - i < k) {
+                sum += nums[j];
+                j++;
+            }
+            if (j - i == k) {
+                ans[i] = sum;
+            }
+            sum -= nums[i];
+        }
+
+        return ans;
+    }
+
+    public int characterReplacement(String s, int k) {
+        // write your code here
+        if (s.length() == 0) {
+            return 0;
+        }
+
+        int j = 0, ans = 0, maxFreq = 0, count;
+        HashMap<Character, Integer> counter = new HashMap<>();
+
+        for (int i = 0; i < s.length(); i++) {
+            while (j < s.length() && j - i - maxFreq <= k) {
+                count = counter.getOrDefault(s.charAt(j), 0) + 1;
+                counter.put(s.charAt(j), count);
+                maxFreq = Math.max(maxFreq, count);
+                j++;
+            }
+
+            if (j - i - maxFreq > k) {
+                ans = Math.max(ans, j - i - 1);
+            } else {
+                ans = Math.max(ans, j - i);
+            }
+
+            count = counter.get(s.charAt(i)) - 1;
+            counter.put(s.charAt(i), count);
+            maxFreq = getMaxFreq(counter);
+        }
+
+        return ans;
+    }
+
+    private int getMaxFreq(HashMap<Character, Integer> map) {
+        int result = 0;
+        for (Integer num : map.values()) {
+            result = Math.max(result, num);
+        }
+
+        return result;
+    }
+
+    public boolean hasCycle(ListNode head) {
+        // write your code here
+        if (head == null || head.next == null) {
+            return false;
+        }
+
+        ListNode fast, slow;
+        fast = head.next;
+        slow = head;
+
+        while (fast != slow) {
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        return true;
+    }
+
+        public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+            // write your code here
+            Set<ListNode> set = new HashSet<>();
+            ListNode temp = headA;
+            while (temp != null) {
+                set.add(temp);
+                temp = temp.next;
+            }
+            temp = headB;
+            while (temp != null) {
+                if (set.contains(temp)) {
+                    return temp;
+                }
+                temp = temp.next;
+            }
+
+            return null;
+        }
+
 
 }
 
