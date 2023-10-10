@@ -2455,6 +2455,21 @@ public class Main {
             return null;
         }
 
+    public ListNode middleNode(ListNode head) {
+        // write your code here
+        if (head == null) {
+            return null;
+        }
+
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow;
+    }
+
 
 }
 
