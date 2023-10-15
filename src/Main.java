@@ -2677,6 +2677,61 @@ public class Main {
         return minDepth + 1;
     }
 
+    public int[] getArray(double[] a, int target) {
+        if(a == null || a.length == 0) {
+            return new int[0];
+        }
+        int n = a.length;
+        double[][] dp = new double[n + 1][target + 1];
+        // dp[i][j] means the minimum cost of changing first i numbers and then the sum of them is eqaul to target.
+        int[][] nums = new int[n + 1][target + 1];
+        // record the int array
+
+        // Initialize the dp array
+        for (int i = 0; i < n + 1; i++) {
+            for (int j = 0; j < target + 1; j++) {
+                dp[i][j] = Double.MAX_VALUE;
+            }
+        }
+        dp[0][0] = 0.0;
+
+        //formula
+        //dp[i][j] =  min(dp[i - 1][j - ceil] + ceil - a[i],dp[i - 1][j - floor] + a[i] - floor);
+        //nums[i][j] means the integer result of the ith number when the total sum is equal to j;
+        for (int i = 1; i < n + 1; i++) {
+            for (int j = 0; j < target + 1; j++) {
+                int floor = (int)Math.floor(a[i - 1]);
+                int ceil = (int)Math.ceil(a[i - 1]);
+                if (j < floor) {
+                    continue;
+                }
+                if (j < ceil) {
+                    dp[i][j] = dp[i - 1][j - floor] + a[i - 1] - floor;
+                    nums[i][j] = floor;
+                    continue;
+                }
+                //dp[i][j] =  Math.min(dp[i - 1][j - ceil] + ceil - a[i - 1], dp[i - 1][j - floor] + a[i - 1] - floor);
+                double costCeil = dp[i - 1][j - ceil] + ceil - a[i - 1];
+                double costFloor = dp[i - 1][j - floor] + a[i - 1] - floor;
+                if (costFloor <= costCeil) {
+                    dp[i][j] = costFloor;
+                    nums[i][j] = floor;
+                } else {
+                    dp[i][j] = costCeil;
+                    nums[i][j] = ceil;
+                }
+            }
+        }
+
+        int[] result = new int[n];
+        for(int i = n; i > 0; i--) {
+            result[i - 1] = nums[i][target];
+            target = target - result[i - 1];
+        }
+
+        return result;
+    }
+
 
 }
 
