@@ -2783,6 +2783,38 @@ public class Main {
         return ans;
     }
 
+    public long kDistinctCharacters(String s, int k) {
+        // Write your code here
+        if (s.length() == 0) {
+            return 0;
+        }
+
+        long ans = 0;
+        int right = 0;
+        char c;
+        Map<Character, Integer> map = new HashMap<>();
+
+        for (int left = 0; left < s.length(); left++) {
+            while (right < s.length() && map.size() < k) {
+                c = s.charAt(right);
+                map.put(c, map.getOrDefault(c, 0) + 1);
+                right++;
+            }
+
+            if (map.size() == k) {
+                ans += s.length() - right + 1;
+            }
+
+            c = s.charAt(left);
+            if (map.get(c) > 1) {
+                map.put(c, map.get(c) - 1);
+            } else {
+                map.remove(c);
+            }
+        }
+        return ans;
+    }
+
 
 }
 
