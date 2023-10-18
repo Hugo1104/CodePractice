@@ -2848,6 +2848,71 @@ public class Main {
         return s.charAt(i - 1) == p.charAt(j - 1);
     }
 
+    public int[] searchRange(int[] a, int target) {
+        // write your code here
+        if (a.length == 0) {
+            return new int[]{-1, -1};
+        }
+
+        int leftBound = searchRangeHelper(a, target, 0, a.length - 1, false);
+        int rightBound = searchRangeHelper(a, target, 0, a.length - 1, true);
+
+        return new int[]{leftBound, rightBound};
+
+    }
+
+    private int searchRangeHelper(int[] a, int target, int left, int right, boolean isUpper) {
+        while (left + 1 < right) {
+            int mid = (left + right) / 2;
+
+            if (a[mid] > target) {
+                right = mid;
+            } else if (a[mid] < target) {
+                left = mid;
+            } else {
+                if (isUpper) {
+                    left = mid;
+                } else {
+                    right = mid;
+                }
+            }
+        }
+
+        if (isUpper) {
+            if (a[right] == target) {
+                return right;
+            } else if (a[left] == target) {
+                return  left;
+            } else {
+                return -1;
+            }
+        } else {
+            if (a[left] == target) {
+                return left;
+            } else if (a[right] == target) {
+                return  right;
+            } else {
+                return -1;
+            }
+        }
+    }
+
+    /*public int findFirstBadVersion(int n) {
+        // write your code here
+        int left = 1, right = n;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (SVNRepo.isBadVersion(mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return left;
+    }*/
+
+
 
 }
 
