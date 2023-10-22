@@ -2972,6 +2972,38 @@ public class Main {
         return ans;
     }
 
+    public int sixDegrees(List<UndirectedGraphNode> graph, UndirectedGraphNode s, UndirectedGraphNode t) {
+        // write your code here
+        if (graph.size() == 0 || graph == null) {
+            return -1;
+        }
+        if (s == t) {
+            return 0;
+        }
+
+        Map<UndirectedGraphNode, Integer> visited = new HashMap<>();
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
+
+        queue.offer(s);
+        visited.put(s, 0);
+
+        while (!queue.isEmpty()) {
+            UndirectedGraphNode node = queue.poll();
+            int step = visited.get(node);
+
+            for (UndirectedGraphNode neighbor : node.neighbors) {
+                if (visited.containsKey(neighbor)) {
+                    continue;
+                }
+
+                visited.put(neighbor, step + 1);
+                queue.offer(neighbor);
+            }
+        }
+
+        return visited.getOrDefault(t, -1);
+    }
+
 
 }
 
