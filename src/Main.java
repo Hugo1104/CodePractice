@@ -3004,6 +3004,41 @@ public class Main {
         return visited.getOrDefault(t, -1);
     }
 
+    public int minLength(String s, Set<String> dict) {
+        // write your code here
+        if (s.length() == 0) {
+            return 0;
+        }
+
+        Set<String> visited = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();
+
+        queue.add(s);
+        int ans = Integer.MAX_VALUE;
+
+        while (!queue.isEmpty()) {
+            String str = queue.poll();
+            for (String word : dict) {
+                int pos = str.indexOf(word);
+                while (pos != -1) {
+                    if (str.equals(word)) {
+                        return 0;
+                    }
+
+                    String temp = str.substring(0, pos) + str.substring(pos + word.length());
+                    if (!visited.contains(temp)) {
+                        visited.add(temp);
+                        ans = Math.min(ans, temp.length());
+                        queue.add(temp);
+                    }
+
+                    pos = str.indexOf(word, pos + 1);
+                }
+            }
+        }
+        return ans;
+    }
+
 
 }
 
