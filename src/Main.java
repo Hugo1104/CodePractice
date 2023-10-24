@@ -3039,6 +3039,139 @@ public class Main {
         return ans;
     }
 
+    public int shortestDistance(int[][] maze, int[] start, int[] destination) {
+        // write your code here
+        if (maze.length == 0) {
+            return 0;
+        }
+
+        int[][] distance = new int[maze.length][maze[0].length];
+        for (int[] row : distance) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+
+        distance[start[0]][start[1]] = 0;
+        int[][] directions = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}};
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(start);
+
+        while (!queue.isEmpty()) {
+            int[] s = queue.poll();
+            for (int[] direction : directions) {
+                int x = s[0] + direction[0];
+                int y = s[1] + direction[1];
+                int count = 0;
+                while (x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0) {
+                    x += direction[0];
+                    y += direction[1];
+                    count++;
+                }
+
+                if (distance[s[0]][s[1]] + count < distance[x - direction[0]][y - direction[1]]) {
+                    distance[x - direction[0]][y - direction[1]] = distance[s[0]][s[1]] + count;
+                    queue.offer(new int[] {x - direction[0], y - direction[1]});
+                }
+            }
+        }
+
+        return distance[destination[0]][destination[1]] == Integer.MAX_VALUE ? -1 : distance[destination[0]][destination[1]];
+    }
+
+    public int kthfloorNode(TreeNode root, int k) {
+        // Write your code here
+        if (root == null) {
+            return 0;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        int level = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            if (level == k) {
+                return size;
+            }
+
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            level++;
+        }
+
+        return 0;
+    }
+
+    public int minMoveStep(int[][] init_state, int[][] final_state) {
+        // # write your code here
+        String source = matrixToString(init_state);
+        String target = matrixToString(final_state);
+
+        Queue<String> queue = new ArrayDeque<>();
+        Map<String, Integer> distance = new HashMap<>();
+
+        queue.offer(source);
+        distance.put(source, 0);
+        while (!queue.isEmpty()) {
+            String s = queue.poll();
+            if (s.equals(target)) {
+                return distance.get(s);
+            }
+            for (String next : getNextStates(s)) {
+                if (distance.containsKey(next)) {
+                    continue;
+                }
+                distance.put(next, distance.get(s) + 1);
+                queue.offer(next);
+            }
+        }
+
+        return -1;
+    }
+
+    private List<String> getNextStates(String s) {
+        int zeroIndex = s.indexOf("0");
+        int x = zeroIndex / 3;
+        int y = zeroIndex % 3;
+        int[][] DIRECTIONS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        List<String> nextStates = new ArrayList<>();
+        for (int[] dir : DIRECTIONS) {
+            int nextX = x + dir[0];
+            int nextY = y + dir[1];
+            if (!inRange(nextX, nextY)) {
+                continue;
+            }
+            int nextIndex = nextX * 3 + nextY;
+            char[] state = s.toCharArray();
+            state[zeroIndex] = state[nextIndex];
+            state[nextIndex] = '0';
+            nextStates.add(new String(state));
+        }
+
+        return nextStates;
+    }
+
+    private boolean inRange(int x, int y) {
+        return x >= 0 && x < 3 && y >= 0 && y < 3;
+    }
+
+    private String matrixToString(int[][] matrix) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                builder.append(String.valueOf(matrix[i][j]));
+            }
+        }
+        return builder.toString();
+    }
+
 
 }
 
