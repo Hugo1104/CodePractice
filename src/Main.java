@@ -3197,6 +3197,39 @@ public class Main {
         return dp[m][n];
     }
 
+    private Set<String> wordSet;
+    private Map<Integer, List<String>> ans = new HashMap<>();
+    public List<String> wordBreak(String s, Set<String> wordDict) {
+        // write your code here
+        wordSet = wordDict;
+        wordBreakHelper(s, 0);
+        return ans.get(0);
+    }
+
+    private void wordBreakHelper(String s, int index) {
+        if (!ans.containsKey(index)) {
+            if (index == s.length()) {
+                ans.put(index, new ArrayList<>());
+                return;
+            }
+
+            ans.put(index, new ArrayList<>());
+            for (int i = index + 1; i <= s.length(); i++) {
+                String word = s.substring(index, i);
+                if (wordSet.contains(word)) {
+                    wordBreakHelper(s, i);
+                    if (ans.get(i).isEmpty() && i == s.length()) {
+                        ans.get(index).add(word);
+                    } else {
+                        for (String success : ans.get(i)) {
+                            ans.get(index).add(word + " " + success);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
 }
 
