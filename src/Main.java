@@ -3230,6 +3230,104 @@ public class Main {
         }
     }
 
+    public List<ListNode> binaryTreeToLists(TreeNode root) {
+        // Write your code here
+        List<ListNode> ans = new LinkedList<>();
+        if (root == null) {
+            return ans;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            ListNode node = null, head = node;
+
+            for (int i = 0; i < size; i++) {
+                TreeNode treeNode = queue.poll();
+                if (i == 0) {
+                    node = new ListNode(treeNode.val);
+                    head = node;
+                } else {
+                    node.next = new ListNode(treeNode.val);
+                    node = node.next;
+                }
+
+                if (treeNode.left != null) {
+                    queue.offer(treeNode.left);
+                }
+
+                if (treeNode.right != null) {
+                    queue.offer(treeNode.right);
+                }
+            }
+
+            ans.add(head);
+        }
+
+        return ans;
+    }
+
+    public List<List<Integer>> binaryTreePathSum(TreeNode root, int target) {
+        // write your code here
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null) {
+            return ans;
+        }
+
+        Deque<Integer> path = new ArrayDeque<>();
+        binaryTreePathSumHelper(root, target, path, ans);
+        return ans;
+    }
+
+    private void binaryTreePathSumHelper(TreeNode node,
+                                         int target,
+                                         Deque<Integer> path,
+                                         List<List<Integer>> ans) {
+        if (node == null) {
+            return;
+        }
+
+        path.addLast(node.val);
+        if (node.left == null && node.right == null) {
+            if (node.val == target) {
+                ans.add(new ArrayList<>(path));
+                path.removeLast();
+                return;
+            }
+        }
+
+        binaryTreePathSumHelper(node.left, target - node.val, path, ans);
+        binaryTreePathSumHelper(node.right, target - node.val, path, ans);
+        path.removeLast();
+    }
+
+    public ParentTreeNode lowestCommonAncestorII(ParentTreeNode root, ParentTreeNode A, ParentTreeNode B) {
+        // write your code here
+        Set<ParentTreeNode> parentSet = new HashSet<>();
+        ParentTreeNode pointer = A;
+        while (pointer != null) {
+            parentSet.add(pointer);
+            pointer = pointer.parent;
+        }
+
+        pointer = B;
+        while (pointer != null) {
+            if (parentSet.contains(pointer)) {
+                return pointer;
+            }
+            pointer = pointer.parent;
+        }
+
+        return null;
+    }
+
+
+}
+
+class ParentTreeNode {
+    public ParentTreeNode parent, left, right;
 
 }
 
