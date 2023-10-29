@@ -3323,6 +3323,23 @@ public class Main {
         return null;
     }
 
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        // write your code here
+        TreeNode pointer = root;
+
+        while (true) {
+            if (p.val < pointer.val && q.val < pointer.val) {
+                pointer = pointer.left;
+            } else if (p.val > pointer.val && q.val > pointer.val) {
+                pointer = pointer.right;
+            } else {
+                break;
+            }
+        }
+
+        return pointer;
+    }
+
 
 }
 
