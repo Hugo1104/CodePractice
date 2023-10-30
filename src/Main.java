@@ -3340,6 +3340,37 @@ public class Main {
         return pointer;
     }
 
+    public List<List<Integer>> binaryTreePathSum2(TreeNode root, int target) {
+        // write your code here
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null) {
+            return ans;
+        }
+
+        pathSum2Helper(root, target, new ArrayList<Integer>(), ans);
+        return ans;
+    }
+
+    private void pathSum2Helper(TreeNode node, int target, List<Integer> path, List<List<Integer>> ans) {
+        if (node == null) {
+            return;
+        }
+
+        path.add(node.val);
+        int sum = 0;
+        for (int i = path.size() - 1; i >= 0; i--) {
+            sum += path.get(i);
+
+            if (sum == target) {
+                ans.add(new ArrayList<Integer>(path.subList(i, path.size())));
+            }
+        }
+
+        pathSum2Helper(node.left, target, path, ans);
+        pathSum2Helper(node.right,target,path,ans);
+
+        path.remove(path.size() - 1);
+    }
 
 }
 
