@@ -3372,6 +3372,62 @@ public class Main {
         path.remove(path.size() - 1);
     }
 
+    Map<Integer, TreeNode> parents = new HashMap<>();
+    Set<Integer> lowestVisited = new HashSet<>();
+    public TreeNode lowestCommonAncestor3(TreeNode root, TreeNode A, TreeNode B) {
+        // write your code here
+        if (root == null) {
+            return null;
+        }
+        lowestCommonAncestor3DFS(root);
+
+        while (A != null) {
+            lowestVisited.add(A.val);
+            A = parents.get(A.val);
+        }
+
+        while (B != null) {
+            if (lowestVisited.contains(B.val)) {
+                return B;
+            }
+            B = parents.get(B.val);
+        }
+
+        return null;
+    }
+
+    private void lowestCommonAncestor3DFS(TreeNode node) {
+        if (node.left != null) {
+            parents.put(node.left.val, node);
+            lowestCommonAncestor3DFS(node.left);
+        }
+
+        if (node.right != null) {
+            parents.put(node.right.val, node);
+            lowestCommonAncestor3DFS(node.right);
+        }
+    }
+
+
+    public char firstUniqChar(String str) {
+        // Write your code here
+        Map<Character, Integer> freq = new HashMap<>();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            freq.put(c, freq.getOrDefault(c, 0) + 1);
+        }
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (freq.get(c) == 1) {
+                return c;
+            }
+        }
+
+        return ' ';
+
+    }
+
 }
 
 class ParentTreeNode {
