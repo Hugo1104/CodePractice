@@ -3428,6 +3428,42 @@ public class Main {
 
     }
 
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        // write your code here
+        TreeNode ans = null;
+
+        while (root != null) {
+            if (root.val <= p.val) {
+                root = root.right;
+            } else {
+                ans = root;
+                root = root.left;
+            }
+        }
+
+        return ans;
+    }
+
+
+    public TreeNode inorderPredecessor(TreeNode root, TreeNode p) {
+        // write your code here
+        TreeNode ans = null;
+
+        while (root != null) {
+            if (p.val <= root.val) {
+                root = root.left;
+            } else {
+                if (ans == null || root.val > ans.val) {
+                    ans = root;
+                }
+                root = root.right;
+            }
+        }
+        return ans;
+    }
+
+
+
 }
 
 class ParentTreeNode {
@@ -3870,6 +3906,56 @@ class BSTIterator {
             subset.remove(subset.size() - 1);
         }
     }
+}
 
 
+class MyQueue {
+    Stack<Integer> stack1;
+    Stack<Integer> stack2;
+    public MyQueue() {
+        // do initialization if necessary
+        stack1 = new Stack<>();
+        stack2 = new Stack<>();
+    }
+
+    /*
+     * @param element: An integer
+     * @return: nothing
+     */
+    public void push(int element) {
+        // write your code here
+        stack1.push(element);
+    }
+
+    /*
+     * @return: An integer
+     */
+    public int pop() {
+        // write your code here
+        if (!stack2.isEmpty()) {
+            return stack2.pop();
+        }
+
+        while (!stack1.isEmpty()) {
+            stack2.push(stack1.pop());
+        }
+
+        return stack2.pop();
+    }
+
+    /*
+     * @return: An integer
+     */
+    public int top() {
+        // write your code here
+        if (!stack2.isEmpty()) {
+            return stack2.peek();
+        }
+
+        while (!stack1.isEmpty()) {
+            stack2.push(stack1.pop());
+        }
+
+        return stack2.peek();
+    }
 }
