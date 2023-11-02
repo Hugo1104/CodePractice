@@ -3462,8 +3462,118 @@ public class Main {
         return ans;
     }
 
+    public int kthLargestElement2(int[] nums, int k) {
+        // write your code here
+        int heapSize = nums.length;
+        buildMaxHeap(nums, heapSize);
+        for (int i = nums.length - 1; i >= nums.length - k + 1; i--) {
+            swap(nums, 0, i);
+            heapSize--;
+            maxHeapify(nums, 0, heapSize);
+        }
+
+        return nums[0];
+    }
+
+    private void buildMaxHeap(int[] nums, int heapSize) {
+        for (int i = heapSize / 2; i >= 0; i--) {
+            maxHeapify(nums, i, heapSize);
+        }
+    }
+
+    private void maxHeapify(int[] nums, int i, int heapSize) {
+        int l = i * 2 + 1;
+        int r = i * 2 + 2;
+        int largest = i;
+
+        if (l < heapSize && nums[l] > nums[largest]) {
+            largest = l;
+        }
+
+        if (r < heapSize && nums[r] > nums[largest]) {
+            largest = r;
+        }
+
+        if (largest != i) {
+            swap(nums, i, largest);
+            maxHeapify(nums, largest, heapSize);
+        }
+
+    }
+
+    public ListNode detectCycle(ListNode head) {
+        // write your code here
+        if (head == null) {
+            return null;
+        }
+
+        ListNode slow = head, fast = head;
+        while (fast != null) {
+            slow = slow.next;
+            if (fast.next != null) {
+                fast = fast.next.next;
+            } else {
+                return null;
+            }
+
+            if (fast == slow) {
+                ListNode pointer = head;
+                while (pointer != slow) {
+                    pointer = pointer.next;
+                    slow = slow.next;
+                }
+                return pointer;
+            }
+        }
+
+        return null;
+    }
+
+    public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
+        // Write your code here
+        int N = quality.length;
+        Worker[] workers = new Worker[N];
+        for (int i = 0; i < N; i++) {
+            workers[i] = new Worker(quality[i], wage[i]);
+        }
+
+        Arrays.sort(workers);
+
+        double ans = 1e9;
+        int sum = 0;
+        PriorityQueue<Integer> pool = new PriorityQueue<>();
+        for (Worker worker: workers) {
+            pool.offer(-worker.quality);
+            sum += worker.quality;
+            if (pool.size() > k) {
+                sum += pool.poll();
+            }
+            if (pool.size() == k) {
+                ans = Math.min(ans, sum * worker.ratio());
+            }
+        }
+
+        return ans;
+    }
 
 
+
+}
+
+class Worker implements Comparable<Worker> {
+    public int quality, wage;
+    public Worker(int q, int w) {
+        quality = q;
+        wage = w;
+    }
+
+    public double ratio() {
+        return (double) wage / quality;
+    }
+
+    public int compareTo(Worker other) {
+        return Double.compare(ratio(), other.ratio());
+    }
 }
 
 class ParentTreeNode {
