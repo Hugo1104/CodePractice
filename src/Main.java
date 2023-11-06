@@ -3597,7 +3597,113 @@ public class Main {
         }
     }
 
+    public List<List<Integer>> combine(int n, int k) {
+        // write your code here
+        List<Integer> combination = new ArrayList<>();
+        List<List<Integer>> ans = new ArrayList<>();
 
+        combineHelper(1, n, k, combination, ans);
+
+        return ans;
+    }
+
+    private void combineHelper(int cur, int n, int k, List<Integer> combination, List<List<Integer>> ans) {
+        if (combination.size() + (n - cur + 1) < k) {
+            return;
+        }
+
+        if (combination.size() == k) {
+            ans.add(new ArrayList<>(combination));
+            return;
+        }
+
+        combination.add(cur);
+        combineHelper(cur + 1, n, k, combination, ans);
+        combination.remove(combination.size() - 1);
+        combineHelper(cur + 1, n, k, combination, ans);
+    }
+
+    public List<List<Integer>> combinationSum2(int[] num, int target) {
+        // write your code here
+        List<List<Integer>> ans = new ArrayList<>();
+        if (num == null || num.length == 0) {
+            return ans;
+        }
+        List<Integer> path = new ArrayList<>();
+        Arrays.sort(num);
+        sum2Helper(num, ans, path, target, 0, false);
+        return ans;
+    }
+
+    private void sum2Helper(int[] num,
+                            List<List<Integer>> ans,
+                            List<Integer> path,
+                            int target,
+                            int index,
+                            boolean selected) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+
+        if (index >= num.length) {
+            return;
+        }
+
+        if (num[index] <= target &&
+                (index < 1 || selected || num[index] != num[index - 1])) {
+            path.add(num[index]);
+            sum2Helper(num, ans, path, target - num[index], index + 1, true);
+            path.remove(path.size() - 1);
+        }
+
+        sum2Helper(num, ans, path, target, index + 1, false);
+    }
+
+    static final int SEG_COUNT = 4;
+    List<String> ipAns = new ArrayList<>();
+    int[] segments = new int[SEG_COUNT];
+    public List<String> restoreIpAddresses(String s) {
+        // write your code here
+        restoreIpHelper(s, 0, 0);
+        return ipAns;
+    }
+
+    private void restoreIpHelper(String s, int segId, int segStart) {
+        if (segId == SEG_COUNT) {
+            if (segStart == s.length()) {
+                StringBuffer ipAddr = new StringBuffer();
+                for (int i = 0; i < SEG_COUNT; i++) {
+                    ipAddr.append(segments[i]);
+                    if (i != SEG_COUNT - 1) {
+                        ipAddr.append('.');
+                    }
+                }
+                ipAns.add(ipAddr.toString());
+            }
+            return;
+        }
+
+        if (segStart == s.length()) {
+            return;
+        }
+
+        if (s.charAt(segStart) == '0') {
+            segments[segId] = 0;
+            restoreIpHelper(s, segId + 1, segStart + 1);
+        }
+
+        int addr = 0;
+        for (int i = segStart; i < s.length(); i++) {
+            addr = addr * 10 + (s.charAt(i) - '0');
+            if (addr > 0 && addr <= 0xFF) {
+                segments[segId] = addr;
+                restoreIpHelper(s, segId + 1, i + 1);
+            } else {
+                break;
+            }
+        }
+    }
 
 }
 
