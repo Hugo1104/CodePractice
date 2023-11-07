@@ -3705,6 +3705,130 @@ public class Main {
         }
     }
 
+
+    private int theMissing = -1;
+    public int findMissing2(int n, String s) {
+        // write your code here
+        boolean[] isFound = new boolean[n + 1];
+        missingDFS(n, s, 0, isFound);
+        return theMissing;
+    }
+
+    private void missingDFS(int n, String s, int start, boolean[] isFound) {
+        if (theMissing != -1) {
+            return;
+        }
+
+        if (start == s.length()) {
+            for (int i = 1; i <= n; i++) {
+                if (!isFound[i]) {
+                    theMissing = i;
+                    return;
+                }
+            }
+        }
+
+        if (s.charAt(start) == '0') {
+            return;
+        }
+
+        for (int i = 1; i <= 2 && start + i <= s.length() ; i++) {
+            int num = Integer.parseInt(s.substring(start, start + i));
+            if (num > 0 && num <= n && !isFound[num]) {
+                isFound[num] = true;
+                missingDFS(n, s, start + i, isFound);
+                isFound[num] = false;
+            }
+        }
+
+        return;
+    }
+
+    public List<List<String>> splitString(String s) {
+        // write your code here
+        List<List<String>> ans = new ArrayList<>();
+        splitStringDFS(0, s, new ArrayList<>(), ans);
+        return ans;
+    }
+
+    private void splitStringDFS(int index, String s, List<String> path, List<List<String>> ans) {
+        if (index == s.length()) {
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+
+        for (int i = 1; i <= 2 && index + i <= s.length() ; i++) {
+            path.add((s.substring(index, index + i)));
+            splitStringDFS(index + i, s, path, ans);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    private List<String> parentheseAns = new ArrayList<>();
+    public List<String> removeInvalidParentheses(String s) {
+        // Write your code here
+        int left = 0, right = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else if (s.charAt(i) == ')') {
+                if (left == 0) {
+                    right++;
+                } else {
+                    left--;
+                }
+            }
+        }
+
+        removeDFS(s, 0, left, right);
+
+        return parentheseAns;
+    }
+
+    private void removeDFS(String s, int index, int left, int right) {
+        if (left == 0 && right == 0) {
+            if (isValid(s)) {
+                parentheseAns.add(s);
+            }
+            return;
+        }
+
+        for (int i = index; i < s.length(); i++) {
+            if (i != index && s.charAt(i) == s.charAt(i - 1)) {
+                continue;
+            }
+
+            if (left + right > s.length() - i) {
+                return;
+            }
+
+            if (left > 0 && s.charAt(i) == '(') {
+                removeDFS(s.substring(0, i) + s.substring(i + 1), i, left - 1, right);
+            }
+
+            if (right > 0 && s.charAt(i) == ')') {
+                removeDFS(s.substring(0, i) + s.substring(i + 1), i, left, right - 1);
+            }
+        }
+    }
+
+    private boolean isValid(String str) {
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '(') {
+                count++;
+            } else if (str.charAt(i) == ')') {
+                count--;
+                if (count < 0) {
+                    return false;
+                }
+            }
+        }
+
+        return count == 0;
+    }
+
 }
 
 class Worker implements Comparable<Worker> {
