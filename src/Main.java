@@ -3829,6 +3829,106 @@ public class Main {
         return count == 0;
     }
 
+    public void solveSudoku(int[][] board) {
+        // write your code here
+        sudokuHelper(board, 0, 0);
+    }
+
+    private boolean sudokuHelper(int[][] board, int i, int j) {
+        int m = 9, n = 9;
+
+        if (j == n) {
+            return sudokuHelper(board, i + 1, 0);
+        }
+
+        if (i == m) {
+            return true;
+        }
+
+        if (board[i][j] != 0) {
+            return sudokuHelper(board, i, j + 1);
+        }
+
+        for (int num = 1; num <= 9; num++) {
+            if (!sudokuValid(board, i, j, num)) {
+                continue;
+            }
+
+            board[i][j] = num;
+            if (sudokuHelper(board, i, j + 1)) {
+                return true;
+            }
+
+            board[i][j] = 0;
+        }
+
+        return false;
+    }
+
+    private boolean sudokuValid(int[][] board, int row, int column, int num) {
+        for (int i = 0; i < 9; i++) {
+            if (board[row][i] == num) {
+                return false;
+            }
+
+            if (board[i][column] == num) {
+                return false;
+            }
+
+            if (board[(row / 3) * 3 + i / 3][(column / 3) * 3 + i % 3] == num) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean wordPatternMatch(String pattern, String str) {
+        // write your code here
+        Map<Character, String> map = new HashMap<>();
+        Set<String> used = new HashSet<>();
+        return match(pattern, str, map, used);
+    }
+
+    private boolean match(String pattern,
+                          String str,
+                          Map<Character, String> map,
+                          Set<String> used) {
+        if (pattern.length() == 0) {
+            return str.length() == 0;
+        }
+
+        Character c = pattern.charAt(0);
+
+        if (map.containsKey(c)) {
+            String word = map.get(c);
+            if (!str.startsWith(word)) {
+                return false;
+            }
+
+            return match(pattern.substring(1),str.substring(map.get(c).length()), map, used);
+        }
+
+        for (int i = 0; i < str.length(); i++) {
+            String word = str.substring(0, i + 1);
+            if (used.contains(word)) {
+                continue;
+            }
+
+            map.put(c, word);
+            used.add(word);
+
+            if (match(pattern.substring(1),str.substring(i + 1), map, used)) {
+                return true;
+            }
+
+            map.remove(c);
+            used.remove(word);
+        }
+        return false;
+    }
+
+
 }
 
 class Worker implements Comparable<Worker> {
