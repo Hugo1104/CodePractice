@@ -4013,6 +4013,110 @@ public class Main {
         return dp[0][size-1];
     }
 
+    public int minCost(int[][] costs) {
+        // write your code here
+        int n = costs.length;
+
+        if (n == 0) {
+            return 0;
+        }
+
+        int[][] dp = new int[2][3];
+        for (int i = 0; i < 3; i++) {
+            dp[0][i] = costs[0][i];
+        }
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < 3; j++) {
+                dp[i & 1][j] = Integer.MAX_VALUE;
+                for (int k = 0; k < 3; k++) {
+                    if (k != j) {
+                        dp[i & 1][j] = Math.min(dp[i & 1][j], dp[i & 1 ^ 1][k] + costs[i][j]);
+                    }
+                }
+            }
+        }
+
+        return Math.min(dp[n & 1 ^ 1][0], Math.min(dp[n & 1 ^ 1][1], dp[n & 1 ^ 1][2]));
+    }
+
+    public int maxValue(String str) {
+        // write your code here
+        int n = str.length();
+        int[][] dp = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = (int) str.charAt(i) - (int)'0';
+        }
+
+        for (int l = 2; l <= n; l++) {
+            for (int i = 0; i < n - l + 1; i++) {
+                int j = i + l - 1;
+                for (int k = i; k < j; k++) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i][k] + dp[k + 1][j]);
+                    dp[i][j] = Math.max(dp[i][j], dp[i][k] * dp[k + 1][j]);
+                }
+            }
+        }
+
+        return dp[0][n - 1];
+    }
+
+    public int minimumDeleteSum(String s1, String s2) {
+        // Write your code here
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+
+        for (int i = s1.length() - 1; i >= 0; i--) {
+            dp[i][s2.length()] = dp[i + 1][s2.length()] + s1.codePointAt(i);
+        }
+
+        for (int i = s2.length() - 1; i >= 0; i--) {
+            dp[s1.length()][i] = dp[s1.length()][i + 1] + s2.codePointAt(i);
+        }
+
+        for (int i = s1.length() - 1; i >= 0; i--) {
+            for (int j = s2.length() - 1; j >= 0; j--) {
+                if (s1.charAt(i) == s2.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j + 1];
+                } else {
+                    dp[i][j] = Math.min(dp[i+1][j] + s1.codePointAt(i),
+                                        dp[i][j+1] + s2.codePointAt(j));
+                }
+            }
+        }
+        return dp[0][0];
+    }
+
+    public boolean canCross(int[] stones) {
+        // write your code here
+        if(stones == null || stones.length == 0){
+            return false;
+        }
+        if(stones.length == 1 || stones.length == 2){
+            return true;
+        }
+        int n = stones.length;
+        boolean[][] dp = new boolean[n][n - 1];
+        dp[1][1] = true;
+        for(int i = 2; i < n; i++){
+            for(int j = i - 1; j >= 0; j--){
+                int distance = stones[i] - stones[j];
+                if(distance > j + 1){
+                    break;
+                }
+                if(dp[j][distance - 1] || dp[j][distance] || dp[j][distance + 1]){
+                    dp[i][distance] = true;
+                }
+            }
+        }
+        for(int i = 0; i < n - 1; i++){
+            if(dp[n - 1][i]){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
 
