@@ -3928,6 +3928,91 @@ public class Main {
         return false;
     }
 
+    public int minDistance(String word1, String word2) {
+        // write your code here
+        int n = word1.length();
+        int m = word2.length();
+
+        if (n * m == 0) {
+            return n + m;
+        }
+
+        int[][] dp = new int[n + 1][m + 1];
+
+        for (int i = 0; i < n + 1; i++) {
+            dp[i][0] = i;
+        }
+
+        for (int i = 0; i < m + 1; i++) {
+            dp[0][i] = i;
+        }
+
+        for (int i = 1; i < n + 1; i++) {
+            for (int j = 1; j < m + 1; j++) {
+                int left = dp[i - 1][j] + 1;
+                int down = dp[i][j -1] + 1;
+                int leftDown = dp[i - 1][j - 1];
+                if (word1.charAt(i - 1) != word2.charAt(j - 1)) {
+                    leftDown += 1;
+                }
+
+                dp[i][j] = Math.min(left, Math.min(down, leftDown));
+            }
+        }
+
+        return dp[n][m];
+    }
+
+    public int maxProfit(int[] prices) {
+        // write your code here
+        if (prices.length == 0) {
+            return 0;
+        }
+
+        int n = prices.length;
+        int buy1 = -prices[0], sell1 = 0;
+        int buy2 = -prices[0], sell2 = 0;
+
+        for (int i = 0; i < n; i++) {
+            buy1 = Math.max(buy1, -prices[i]);
+            sell1 = Math.max(sell1, buy1 + prices[i]);
+            buy2 = Math.max(buy2, sell1 - prices[i]);
+            sell2 = Math.max(sell2, buy2 + prices[i]);
+        }
+
+        return sell2;
+    }
+
+    public int stoneGame(int[] A) {
+        int size = A.length;
+        if (A == null || size == 0) {
+            return 0;
+        }
+
+        int[][] dp = new int[size][size];
+        int[] sum_a = new int[size + 1];
+        //前缀和
+        for (int i = 0; i < size; i++) {
+            sum_a[i + 1] = sum_a[i] + A[i];
+        }
+        // 长度从2开始即可，因为长度为1的时候结果是0，dp初始化的时候默认就是0，没必要赋值
+        for (int len = 2; len <= size; len++) {
+            // i枚举的是正在枚举的区间的左端点
+            for (int i = 0; i + len - 1 < size; i++) {
+                // 正在枚举的区间左端点是i，右端点是i + size - 1
+                int l = i, r = i + len - 1;
+                // 在求最小的时候，需要初始化成一个很大的数，然后不断更新
+                dp[l][r] = Integer.MAX_VALUE;
+                for (int j = l; j < r; j++) {
+                    //递推式
+                    dp[l][r] = Math.min(dp[l][r], dp[l][j] + dp[j + 1][r] + sum_a[r + 1] - sum_a[l]);
+                }
+            }
+        }
+
+        return dp[0][size-1];
+    }
+
 
 }
 
