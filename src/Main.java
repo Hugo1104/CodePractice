@@ -4145,6 +4145,27 @@ public class Main {
         return stack.isEmpty();
     }
 
+    int diameter;
+    public int diameterOfBinaryTree(TreeNode root) {
+        // write your code here
+        diameter = 1;
+        diameterHelper(root);
+        return diameter - 1;
+    }
+
+    private int diameterHelper(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int left = diameterHelper(node.left);
+        int right = diameterHelper(node.right);
+
+        diameter = Math.max(diameter, left + right + 1);
+        return Math.max(left, right) + 1;
+    }
+
+
 
 }
 
