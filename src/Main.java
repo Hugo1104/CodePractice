@@ -4213,6 +4213,51 @@ public class Main {
         }
     }
 
+    public int triangleCount(int[] s) {
+        // write your code here
+        int n = s.length;
+        Arrays.sort(s);
+        int ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int left = j + 1, right = n - 1, k = j;
+
+                while (left <= right) {
+                    int mid = (left + right) / 2;
+                    if (s[mid] < s[i] + s[j]) {
+                        k = mid;
+                        left = mid + 1;
+                    } else {
+                        right = mid - 1;
+                    }
+                }
+                ans += k - j;
+            }
+        }
+
+        return ans;
+    }
+
+    public int twoSum2(int[] nums, int target) {
+        // write your code here
+        int n = nums.length;
+        Arrays.sort(nums);
+
+        int ans = 0, left = 0, right = n - 1;
+
+        while (left < right) {
+            if (nums[left] + nums[right] <= target) {
+                left++;
+            } else {
+                ans += right - left;
+                right--;
+            }
+        }
+
+        return ans;
+    }
+
 
 
 }
