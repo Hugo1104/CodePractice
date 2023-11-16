@@ -4165,6 +4165,54 @@ public class Main {
         return Math.max(left, right) + 1;
     }
 
+    public void rerange(int[] a) {
+        // write your code here
+        if(a == null || a.length < 3) {
+            return;
+        }
+
+        int n = a.length;
+        int countPositive = 0;//count the number of positive numbers
+
+        // store the positive numbers index.
+        int positiveIndex = 0;
+        int pos = 1;
+        int neg = 0;
+        for (int i = 0;i < n;i++) {
+            if (a[i] > 0) {
+                // Put all the positive numbers at in the left part.
+                swap(a,positiveIndex++,i);
+                countPositive++;
+            }
+        }
+
+        if (countPositive > n/2) {
+            // If positive numbers are more than negative numbers,
+            // Put the positive numbers at first.
+            pos = 0;
+            neg = 1;
+            // Reverse the array.
+
+            int left = 0;
+            int right = n-1;
+            while (left < right) {
+                swap(a, left, right);
+                left++;
+                right--;
+            }
+        }
+
+        while(pos < n && neg < n) {
+            while(pos < n && a[pos] > 0)
+                pos +=2;
+            while(neg < n && a[neg] < 0)
+                neg +=2;
+            if(neg >= n || pos >= n)
+                break;
+            swap(a, pos, neg);
+        }
+    }
+
 
 
 }
