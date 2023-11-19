@@ -4258,6 +4258,120 @@ public class Main {
         return ans;
     }
 
+    public int kthSmallest(int k, int[] nums) {
+        // write your code here
+        int n = nums.length;
+        return kthHelper(nums, 0, n - 1, k - 1);
+    }
+
+    private int kthHelper(int[] nums, int start, int end, int k) {
+        int left = start, right = end;
+        int pivot = nums[start];
+
+        while (left <= right) {
+            while (left <= right && nums[left] < pivot) {
+                left++;
+            }
+
+            while (left <= right && nums[right] > pivot) {
+                right--;
+            }
+
+            if (left <= right) {
+                swap(nums, left, right);
+                left++;
+                right--;
+            }
+        }
+
+        if (k <= right) {
+            return kthHelper(nums, start, right, k);
+        }
+
+        if (k >= left){
+            return kthHelper(nums, left, end, k);
+        }
+
+        return nums[k];
+    }
+
+    public int twoSumClosest(int[] nums, int target) {
+        // write your code here
+        if (nums.length == 0) {
+            return -1;
+        }
+
+        Arrays.sort(nums);
+        int left = 0, right = nums.length - 1;
+        int ans = Integer.MAX_VALUE;
+
+        while (left < right) {
+            if (nums[right] + nums[left] == target) {
+                return 0;
+            } else if (nums[left] + nums[right] < target) {
+                ans = Math.min(ans, Math.abs(target - nums[left] - nums[right]));
+                left++;
+            } else {
+                ans = Math.min(ans, Math.abs(target - nums[left] - nums[right]));
+                right--;
+            }
+        }
+
+        return ans;
+    }
+
+    public int[] twoSumII(int[] nums, int target) {
+        // write your code here
+        if (nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            if (nums[left] + nums[right] == target) {
+                return new int[]{left + 1, right + 1};
+            } else if (nums[left] + nums[right] <  target) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+
+        return new int[]{-1, -1};
+    }
+
+    public int twoSum5II(int[] nums, int target) {
+        // write your code here
+        if (nums.length == 0) {
+            return 0;
+        }
+
+        Arrays.sort(nums);
+
+        int left = 0, right = nums.length - 1;
+        int count = 0;
+
+        while (left <= nums.length - 1) {
+            while (right >= 0) {
+                if (nums[left] + nums[right] > target) {
+                    right--;
+                } else {
+                    break;
+                }
+            }
+
+            if (left < right) {
+                count += right - left;
+            } else {
+                break;
+            }
+
+            left++;
+        }
+
+        return count;
+    }
+
 
 
 }
