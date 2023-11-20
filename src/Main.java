@@ -4372,7 +4372,40 @@ public class Main {
         return count;
     }
 
+    public int search(int[] a, int target) {
+        // write your code here
+        int n = a.length;
+        if (n == 0) {
+            return -1;
+        }
+        if (n == 1) {
+            return a[0] == target ? 0 : -1;
+        }
 
+        int left = 0, right = n - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (a[mid] == target) {
+                return mid;
+            }
+
+            if (a[0] <= a[mid]) {
+                if (a[0] <= target && target < a[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (a[mid] < target && target <= a[n - 1]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+
+        return -1;
+    }
 
 }
 
