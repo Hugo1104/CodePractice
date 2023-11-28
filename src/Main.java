@@ -4407,6 +4407,242 @@ public class Main {
         return -1;
     }
 
+//    public int searchBigSortedArray(ArrayReader reader, int target) {
+//        // write your code here
+//        int k = 1;
+//        while (reader.get(k - 1) < target) {
+//            k = k * 2;
+//        }
+//
+//        int start = 0, end = k - 1;
+//        while (start + 1 < end) {
+//            int mid = start + (end - start) / 2;
+//            if (reader.get(mid) < target) {
+//                start = mid;
+//            } else {
+//                end = mid;
+//            }
+//        }
+//
+//        if (reader.get(start) == target) {
+//            return start;
+//        }
+//
+//        if (reader.get(end) == target) {
+//            return end;
+//        }
+//
+//        return -1;
+//    }
+
+    public int strStr2(String source, String target) {
+        // write your code here
+        if (source == null || target == null) {
+            return -1;
+        }
+
+        int m = target.length();
+        if (m == 0) {
+            return 0;
+        }
+
+        int power = 1;
+        int BASE = 100007;
+        for (int i = 0; i < m; i++) {
+            power = (power * 31) % BASE;
+        }
+
+        int targetCode = 0;
+        for (int i = 0; i < m; i++) {
+            targetCode = (targetCode * 31 + target.charAt(i)) % BASE;
+        }
+
+        int sourceCode = 0;
+        for (int i = 0; i < source.length(); i++) {
+            sourceCode = (sourceCode * 31 + source.charAt(i)) % BASE;
+
+            if (m - 1 >= i) {
+                continue;
+            }
+
+            sourceCode = (sourceCode - power * source.charAt(i - m)) % BASE;
+
+            if (sourceCode < 0) {
+                sourceCode += BASE;
+            }
+
+            if (sourceCode == targetCode) {
+                return i - m + 1;
+            }
+        }
+
+        return -1;
+    }
+
+    public boolean validTree(int n, int[][] edges) {
+        // write your code here
+        if (n == 0) {
+            return false;
+        }
+
+        if (edges.length != n - 1) {
+            return false;
+        }
+
+        Map<Integer, Set<Integer>> graph = initializeGraph(n, edges);
+        Set<Integer> visited = new HashSet<>();
+        //validTreeBFS(0, graph, visited);
+        validTreeDFS(0, graph, visited);
+
+        return visited.size() == n;
+    }
+
+    private void validTreeBFS(int n, Map<Integer, Set<Integer>> graph, Set<Integer> visited) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(n);
+        visited.add(n);
+
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            for (Integer neighbor : graph.get(node)) {
+                if (visited.contains(neighbor)) {
+                    continue;
+                }
+                queue.offer(neighbor);
+                visited.add(neighbor);
+            }
+        }
+    }
+
+    private void validTreeDFS(int n, Map<Integer, Set<Integer>> graph, Set<Integer> visited) {
+        visited.add(n);
+        for (Integer neighbor : graph.get(n)) {
+            if (visited.contains(neighbor)) {
+                continue;
+            }
+            validTreeDFS(neighbor, graph, visited);
+        }
+    }
+
+    private Map<Integer, Set<Integer>> initializeGraph(int n, int[][] edges) {
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            graph.put(i, new HashSet<>());
+        }
+
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            graph.get(u).add(v);
+            graph.get(v).add(u);
+        }
+
+        return graph;
+    }
+
+    public List<List<Integer>> connectedSet(List<UndirectedGraphNode> nodes) {
+        // write your code here
+        List<List<Integer>> ans = new ArrayList<>();
+        if (nodes == null || nodes.size() == 0) {
+            return ans;
+        }
+
+        Set<UndirectedGraphNode> visited = new HashSet<>();
+
+        for (UndirectedGraphNode node : nodes) {
+            if (!visited.contains(node)) {
+                connectedSetBFS(node, visited, ans);
+            }
+        }
+        return ans;
+    }
+
+    private void connectedSetBFS(UndirectedGraphNode start, Set<UndirectedGraphNode> visited, List<List<Integer>> ans) {
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
+        List<Integer> group = new ArrayList<>();
+        queue.offer(start);
+        visited.add(start);
+        group.add(start.label);
+
+        while (!queue.isEmpty()) {
+            UndirectedGraphNode node = queue.poll();
+            for (UndirectedGraphNode neighbor : node.neighbors) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.offer(neighbor);
+                    group.add(neighbor.label);
+                }
+            }
+        }
+
+        Collections.sort(group);
+        ans.add(group);
+    }
+
+    public int zombie(int[][] grid) {
+        // write your code here
+        int n = grid.length;
+        int m = grid[0].length;
+
+        Queue<Point> queue = new LinkedList<>();
+        int human = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+               if (grid[i][j] == 1) {
+                   queue.add(new Point(i, j));
+               } else if (grid[i][j] == 0) {
+                   human += 1;
+               }
+            }
+        }
+
+        final int[][] DIRECTIONS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        int count = 0;
+        while (!queue.isEmpty()) {
+            int zombieIncreased = 0;
+            int newZombie = queue.size();
+            for (int i = 0; i < newZombie; i++) {
+                Point point = queue.poll();
+                for (int[] direction : DIRECTIONS) {
+                    int newX = direction[0] + point.x;
+                    int newY = direction[1] + point.y;
+                    if (boundaryCheck(newX, newY, n, m, grid)) {
+                        queue.add(new Point(newX, newY));
+                        grid[newX][newY] = 1;
+                        zombieIncreased++;
+                    }
+                }
+            }
+
+            if (zombieIncreased == 0) {
+                break;
+            }
+
+            human -= zombieIncreased;
+            count++;
+
+            if (human == 0) {
+                break;
+            }
+        }
+
+        if (human > 0) {
+            return -1;
+        }
+
+        return count;
+    }
+
+    private boolean boundaryCheck(int x, int y, int n, int m, int[][] grid) {
+        if (x < 0 || x >= n || y < 0 || y >= m) {
+            return false;
+        }
+
+        return grid[x][y] == 0;
+    }
+
 }
 
 class Worker implements Comparable<Worker> {
