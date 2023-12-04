@@ -4643,6 +4643,96 @@ public class Main {
         return grid[x][y] == 0;
     }
 
+    public boolean sequenceReconstruction(int[] org, int[][] seqs) {
+        // write your code here
+        Map<Integer, Set<Integer>> graph = sequenceGraph(seqs);
+        Map<Integer, Integer> inDegree = getIndegree(seqs, graph);
+
+        List<Integer> zeroInDegree = new ArrayList<>();
+
+        for (int i : inDegree.keySet()) {
+            if (inDegree.get(i) == 0) {
+                zeroInDegree.add(i);
+            }
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
+
+        for (int i : zeroInDegree) {
+            queue.offer(i);
+        }
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+
+            if (size > 1) {
+                return false;
+            }
+
+            int i = queue.poll();
+            result.add(i);
+
+            if (!graph.containsKey(i)) {
+                continue;
+            }
+
+            for (int next : graph.get(i)) {
+                inDegree.put(next, inDegree.get(next) - 1);
+                if (inDegree.get(next) == 0) {
+                    queue.offer(next);
+                }
+            }
+        }
+
+        if (result.size() != org.length) {
+            return false;
+        }
+
+        for (int i = 0; i < org.length; i++) {
+            if (org[i] != result.get(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private Map<Integer, Integer> getIndegree(int[][] seqs, Map<Integer, Set<Integer>> graph) {
+        Map<Integer, Integer> inDegree = new HashMap<>();
+
+        for (int i = 0; i < seqs.length; i++) {
+            for (int j = 0; j < seqs[i].length; j++) {
+                inDegree.put(seqs[i][j], 0);
+            }
+        }
+
+        for (int i : graph.keySet()) {
+            for (int next : graph.get(i)) {
+                inDegree.put(next, inDegree.get(next) + 1);
+            }
+        }
+
+        return inDegree;
+    }
+
+    private Map<Integer, Set<Integer>> sequenceGraph(int[][] seqs) {
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+
+        for (int i = 0; i < seqs.length; i++) {
+            for (int j = 0; j < seqs[i].length - 1; j++) {
+                if (!graph.containsKey(seqs[i][j])) {
+                    Set<Integer> set = new HashSet<>();
+                    set.add(seqs[i][j + 1]);
+                    graph.put(seqs[i][j], set);
+                } else {
+                    graph.get(seqs[i][j]).add(seqs[i][j + 1]);
+                }
+            }
+        }
+        return graph;
+    }
+
 }
 
 class Worker implements Comparable<Worker> {
