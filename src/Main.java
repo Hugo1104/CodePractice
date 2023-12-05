@@ -4733,6 +4733,90 @@ public class Main {
         return graph;
     }
 
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // write your code here
+        List<ArrayList<Integer>> graph = new ArrayList<>();
+        int[] inDegree = new int[numCourses];
+
+        for (int i = 0; i < numCourses; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        for (int[] prereq : prerequisites) {
+            graph.get(prereq[1]).add(prereq[0]);
+            inDegree[prereq[0]]++;
+        }
+
+        int numChoose = 0;
+        Queue<Integer> queue = new LinkedList<>();
+
+        for (int i = 0; i < inDegree.length; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int index = queue.poll();
+            numChoose++;
+
+            for (int i = 0; i < graph.get(index).size(); i++) {
+                int nextIndex = graph.get(index).get(i);
+                inDegree[nextIndex]--;
+                if (inDegree[nextIndex] == 0) {
+                    queue.add(nextIndex);
+                }
+            }
+        }
+
+        return numChoose == numCourses;
+    }
+
+
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        // write your code here
+        List<ArrayList<Integer>> graph = new ArrayList<>();
+        int[] inDegree = new int[numCourses];
+
+        for (int i = 0; i < numCourses; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        for (int[] prereq : prerequisites) {
+            graph.get(prereq[1]).add(prereq[0]);
+            inDegree[prereq[0]]++;
+        }
+
+        int numChoose = 0;
+        Queue<Integer> queue = new LinkedList<>();
+        int[] topoOrder = new int[numCourses];
+
+        for (int i = 0; i < inDegree.length; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int index = queue.poll();
+            topoOrder[numChoose] = index;
+            numChoose++;
+            for (int i = 0; i < graph.get(index).size(); i++) {
+                int nextIndex = graph.get(index).get(i);
+                inDegree[nextIndex]--;
+                if (inDegree[nextIndex] == 0) {
+                    queue.add(nextIndex);
+                }
+            }
+        }
+
+        if (numChoose == numCourses) {
+            return topoOrder;
+        }
+
+        return new int[0];
+    }
+
 }
 
 class Worker implements Comparable<Worker> {
