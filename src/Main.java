@@ -4817,6 +4817,66 @@ public class Main {
         return new int[0];
     }
 
+    public UndirectedGraphNode searchNode(ArrayList<UndirectedGraphNode> graph,
+                                          Map<UndirectedGraphNode, Integer> values,
+                                          UndirectedGraphNode node,
+                                          int target) {
+        // write your code here
+        if (graph == null || values == null || node == null) {
+            return null;
+        }
+
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
+        Set<UndirectedGraphNode> visited = new HashSet<>();
+
+        queue.add(node);
+        visited.add(node);
+
+        while (!queue.isEmpty()) {
+            UndirectedGraphNode cur = queue.poll();
+            if (values.get(cur) == target) {
+                return cur;
+            }
+
+            for (UndirectedGraphNode neighbor : cur.neighbors) {
+                if (!visited.contains(neighbor)) {
+                    queue.add(neighbor);
+                    visited.add(neighbor);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public TreeNode insertNode(TreeNode root, TreeNode node) {
+        // write your code here
+        if (root == null) {
+            return node;
+        }
+
+        TreeNode cur = root;
+        while (true) {
+            if (node.val < cur.val) {
+                if (cur.left == null) {
+                    cur.left = node;
+                    break;
+                } else {
+                    cur = cur.left;
+                }
+            } else {
+                if (cur.right == null) {
+                    cur.right = node;
+                    break;
+                } else {
+                    cur = cur.right;
+                }
+            }
+        }
+
+        return root;
+    }
+
 }
 
 class Worker implements Comparable<Worker> {
