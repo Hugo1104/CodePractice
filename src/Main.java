@@ -4877,6 +4877,85 @@ public class Main {
         return root;
     }
 
+    private TreeNode maxAve = null;
+    private AnswerSub maxAns = null;
+    public TreeNode findSubtree2(TreeNode root) {
+        // write your code here
+        findSubtree2Helper(root);
+        return maxAve;
+    }
+
+    private AnswerSub findSubtree2Helper(TreeNode node) {
+        if (node == null) {
+            return new AnswerSub(0, 0);
+        }
+
+        AnswerSub left = findSubtree2Helper(node.left);
+        AnswerSub right = findSubtree2Helper(node.right);
+
+        AnswerSub res = new AnswerSub(left.sum + right.sum + node.val, left.count + right.count + 1);
+        if (maxAve == null || (double) maxAns.sum / maxAns.count < (double) res.sum / res.count) {
+            maxAve = node;
+            maxAns = res;
+        }
+
+        return res;
+    }
+
+    public List<Integer> searchRange(TreeNode root, int k1, int k2) {
+        // write your code here
+        List<Integer> ans = new ArrayList<>();
+        searchHelper(ans, root, k1, k2);
+        return ans;
+    }
+
+    private void searchHelper(List<Integer> ans, TreeNode node, int k1, int k2) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.val > k2) {
+            searchHelper(ans, node.left, k1, k2);
+        }
+
+        if (node.val >= k1 && node.val <= k2) {
+            searchHelper(ans, node.left, k1, k2);
+            ans.add(node.val);
+            searchHelper(ans, node.right, k1, k2);
+        }
+
+        if (node.val < k1) {
+            searchHelper(ans, node.right, k1, k2);
+        }
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        // write your code here
+        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    private boolean isValidBST(TreeNode node, long lower, long upper) {
+        if (node == null) {
+            return true;
+        }
+
+        if (node.val <= lower || node.val >= upper) {
+            return false;
+        }
+
+        return isValidBST(node.left, lower, node.val) && isValidBST(node.right, node.val, upper);
+    }
+
+}
+
+class AnswerSub {
+    int sum;
+    int count;
+
+    public AnswerSub(int sum, int count) {
+        this.sum = sum;
+        this.count = count;
+    }
 }
 
 class Worker implements Comparable<Worker> {
