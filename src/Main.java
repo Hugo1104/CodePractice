@@ -4946,6 +4946,196 @@ public class Main {
         return isValidBST(node.left, lower, node.val) && isValidBST(node.right, node.val, upper);
     }
 
+    public int longestConsecutive(int[] num) {
+        // write your code here
+        Set<Integer> set = new HashSet<>();
+
+        for (int i = 0; i < num.length; i++) {
+            set.add(num[i]);
+        }
+
+        int longestStreak = 0;
+
+        for (int x : num) {
+            if (!set.contains(x - 1)) {
+                int cur = x;
+                int currentStreak = 1;
+
+                while (set.contains(++cur)) {
+                    currentStreak++;
+                }
+
+                longestStreak = Math.max(longestStreak, currentStreak);
+            }
+        }
+
+        return longestStreak;
+    }
+
+    public String stringReplace(String[] a, String[] b, String s) {
+        // Write your code here
+        int n = a.length;
+        int len = s.length();
+        //hash函数的基底
+        long seed = 31L;
+        //hash函数的模数
+        long mod = 1000000007L;
+        //a数组里每个字符串的hash值
+        List<Long> aHash = new ArrayList<Long>();
+        //s串前缀hash值
+        List<Long> sHash = new ArrayList<Long>();
+        //基底值
+        List<Long> base = new ArrayList<Long>();
+        // 答案，为了避免MLE 不能用string
+        StringBuilder ans = new StringBuilder(s);
+        for(int i = 0; i < n; i++) {
+            long tmp = 0L;
+            //计算a数组中第i串的hash值
+            for(int j = 0; j < a[i].length(); j++) {
+                tmp = tmp * seed + ((int)(a[i].charAt(j)) - (int)('a'));
+                tmp = tmp % mod;
+            }
+            aHash.add(tmp);
+        }
+        long sTmp = 0L, baseTmp = 1L;
+        sHash.add(sTmp);
+        base.add(baseTmp);
+        for(int i = 0; i < len; i++) {
+            //计算s串的前缀hash值
+            sTmp = sTmp * seed + (int)(s.charAt(i)) - (int)('a');
+            sTmp %= mod;
+            sHash.add(sTmp);
+
+
+
+            //计算基底
+            baseTmp = baseTmp * seed;
+            baseTmp %= mod;
+            base.add(baseTmp);
+
+        }
+        int i = 0;
+        while(i < len) {
+            int mx = 0, idx = -1;
+            //枚举和a数组中哪个字符串匹配，且寻找最长的那个
+            for(int j = 0; j < a.length; j++) {
+                int aLen = a[j].length();
+                if(i + aLen > len)continue;
+                long A = aHash.get(j);
+                //hash计算s的子串的hash值
+                long S = sHash.get(aLen + i) - base.get(aLen) * sHash.get(i) % mod;
+                A = A % mod;
+                S = (S % mod + mod) % mod;
+                if(A == S && aLen > mx) {
+                    mx = aLen;
+                    idx = j;
+                }
+            }
+            if(idx != -1) {
+                //有匹配成功的，用b数组的字符串替换掉
+                ans.replace(i, i + mx, b[idx]);
+                i = i + mx;
+            } else {
+                //保留原s串的字符
+                i = i + 1;
+            }
+        }
+        return ans.toString();
+    }
+
+
+    public int[] deltaX = {0, 1, 0, -1};
+    public int[] deltaY = {1, 0, -1, 0};
+    public int shortestDistance(int[][] grid) {
+        // write your code here
+        if (grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+
+        int n = grid.length, m = grid[0].length;
+        int minDist = Integer.MAX_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == GridType.EMPTY) {
+                    Map<Integer, Integer> distance = shortestHelper(grid, i ,j);
+                    minDist = Math.min(minDist, getDistanceSum(distance, grid));
+                }
+            }
+        }
+
+        return minDist != Integer.MAX_VALUE ? minDist : -1;
+    }
+
+    private Map<Integer, Integer> shortestHelper(int[][] grid, int i, int j) {
+        int n = grid.length, m = grid[0].length;
+
+        Map<Integer, Integer> distance = new HashMap<>();
+        Queue<Integer> queue = new LinkedList<>();
+
+        distance.put(i * m + j, 0);
+        queue.add(i * m + j);
+
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            int x = current / m, y = current % m;
+            for (int direction = 0; direction < 4; direction++) {
+                int newX = x + deltaX[direction];
+                int newY = y + deltaY[direction];
+                int next = newX * m + newY;
+
+                if (!isValid(newX, newY, grid)) {
+                    continue;
+                }
+
+                if (distance.containsKey(next)) {
+                    continue;
+                }
+
+                distance.put(next, distance.get(current) + 1);
+
+                if (grid[newX][newY] != GridType.HOUSE) {
+                    queue.add(next);
+                }
+            }
+        }
+        return distance;
+    }
+
+    private int getDistanceSum(Map<Integer, Integer> distance, int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int distanceSum = 0;
+
+        for (int x = 0; x < n; x++) {
+            for (int y = 0; y < m; y++) {
+                int val = grid[x][y];
+                if (val == GridType.HOUSE) {
+                    if (!distance.containsKey(x * m + y)) {
+                        return Integer.MAX_VALUE;
+                    }
+                    distanceSum += distance.get(x * m + y);
+                }
+            }
+        }
+
+        return distanceSum;
+    }
+
+    private boolean isValid(int x, int y, int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        if (x < 0 || x >= n || y < 0 || y >= m) {
+            return false;
+        }
+
+        return grid[x][y] == GridType.EMPTY || grid[x][y] == GridType.HOUSE;
+    }
+
+}
+
+class GridType {
+    static int EMPTY = 0;
+    static int HOUSE = 1;
+    static int WALL = 2;
 }
 
 class AnswerSub {
