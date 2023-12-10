@@ -5131,87 +5131,134 @@ public class Main {
     }
 
     public String alienOrder(String[] words) {
-        // Write your code here
-        if(words == null || words.length == 0){
+
+        // /*
+        //indegree of all 26 characters as -1
+        Map<Character, Set<Character>> graph = new HashMap<>();
+        int[] inDegree = new int[26];
+        Arrays.fill(inDegree, -1);
+
+        // build graph and update indegree
+        String result = buildGraph(words, graph, inDegree);
+        if (result == null) {
             return "";
         }
 
-        Map<Character, Set<Character>> neighbors =
-                new HashMap<>();
-        Map<Character, Integer> indegrees =
-                new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        //Queue<Character> queue = new LinkedList<>();
+        Queue<Character> queue = new PriorityQueue<>();
 
-        // build graph
-        // build nodes
-        for(int i = 0; i < words.length; i++){
-            for(int j = 0; j < words[i].length(); j++){
-                if(!neighbors.containsKey(words[i].charAt(j))){
-                    neighbors.put(words[i].charAt(j), new HashSet<Character>());
+        //if indegree is 0 put into queue, if is not -1, numOfCharacters++
+        int numOfCharacters = 0;
+        for (int i = 0; i < 26; i++) {
+            if (inDegree[i] == 0) {
+                System.out.println((char) (i + 'a'));
+                queue.offer((char) (i + 'a'));
+            }
+            if(inDegree[i]!=-1) {
+                numOfCharacters++;
+            }
+        }
+
+        // iterate queue
+        // pop and add to sb
+        // if popped is a key in graph, for each of its child, subtract indegree by 1
+        // if indegree becomes 0, add to queue
+        while (!queue.isEmpty()) {
+            char curr = queue.poll();
+            System.out.println("queue");
+            System.out.println(curr);
+            sb.append(curr);
+            if (graph.containsKey(curr)) {
+                for (char next : graph.get(curr)) {
+                    inDegree[next - 'a'] = inDegree[next - 'a']-1;
+                    if (inDegree[next - 'a'] == 0) {
+                        System.out.println("next");
+                        System.out.println(next);
+                        queue.offer(next);
+                    }
                 }
-
-                indegrees.put(words[i].charAt(j), 0);
             }
         }
 
-        // build edges
-        for(int i = 0; i < words.length - 1; i++){
-            //这里j和i的关系一定是相邻的两个单词
-            int j = i + 1;
-            int k = 0;
+        // return sb, if it's length = numOfCharacters
+        return sb.length() == numOfCharacters ? sb.toString() : "";
+    }
 
-            while(k < words[i].length() && k < words[j].length()){
-                if(words[i].charAt(k) != words[j].charAt(k)){
-                    neighbors.get(words[i].charAt(k)).add(words[j].charAt(k));
+    // comparing 2 words at a time, and stopping on 1st common letter of those 2
+    // and making graph (a Set - kind of adjacency), and indegree
+    // put character in first word as KEY, and character of second word for indegree
+    // OUT vs IN
+    // Set - no particular order but duplicacy control
+    private String buildGraph(String[] words, Map<Character, Set<Character>> graph, int[] inDegree) {
+        // indegree of all present characters as 0 - on all words
+        for (String word : words) {
+            for (char c : word.toCharArray()) {
+                inDegree[c - 'a'] = 0;
+            }
+        }
+        // 2 pointers - on all words
+        for (int i = 1; i < words.length; i++) {
+            String first = words[i - 1];
+            String second = words[i];
 
-                    break;
+            // min length of 2, to iterate it
+            int len = Math.min(first.length(), second.length());
+            // iterate it
+            for (int j = 0; j < len; j++) {
+                char out = first.charAt(j);
+                char in = second.charAt(j);
+                // stopping on 1st common letter
+                if (out != in) {
+                    Set<Character> set = graph.getOrDefault(out, new HashSet<>());
+                    if (!set.contains(in)) {
+                        set.add(in);
+                        graph.put(out, set);    // this doesnot put bak, we need to put
+                        inDegree[in - 'a']++;
+                    }
+                    break;      // stopping on first different letter; // Later characters' order are meaningless
                 }
-
-                k++;
-            }
-        }
-
-        // build indegrees
-        // 这一步其实也可以写在建neighbors的时候, 但是那样写代码太混乱了, 这样清楚一些
-        for(char key : neighbors.keySet()){
-            for(char neighbor : neighbors.get(key)){
-                indegrees.put(neighbor, indegrees.get(neighbor) + 1);
-            }
-        }
-
-        // toplogical sorting
-        PriorityQueue<Character> queue = new PriorityQueue<>();
-
-        for(char key : indegrees.keySet()){
-            if(indegrees.get(key) == 0){
-                queue.add(key);
-            }
-        }
-
-        StringBuilder res = new StringBuilder();
-        while(!queue.isEmpty()){
-            char cur = queue.remove();
-            res.append(cur);
-
-            for(char neighbor : neighbors.get(cur)){
-                int new_indegree = indegrees.get(neighbor) - 1;
-                if(new_indegree == 0){
-                    queue.add(neighbor);
+                if (j==len-1) {
+                    // First = "ab", second = "a" -> invalid
+                    if (first.length()> second.length()) {
+                        return null;
+                    }
                 }
-
-                indegrees.put(neighbor, new_indegree);
             }
         }
+        return "";
+    }
 
-        //最后还要判断排出来的拓扑序是不是有效的, 是不是所有的节点都遍历过了
-        //如果不是的话我们直接输出空串, 证明组成给定的这些单词的字母没有办法组成一个合理的拓扑序
-        if(neighbors.keySet().size() != res.length()){
-            return "";
+
+    public RandomListNode copyRandomList(RandomListNode head) {
+        if (head == null) {
+            return null;
         }
-
-        return res.toString();
+        for (RandomListNode node = head; node != null; node = node.next.next) {
+            RandomListNode nodeNew = new RandomListNode(node.label);
+            nodeNew.next = node.next;
+            node.next = nodeNew;
+        }
+        for (RandomListNode node = head; node != null; node = node.next.next) {
+            RandomListNode nodeNew = node.next;
+            nodeNew.random = (node.random != null) ? node.random.next : null;
+        }
+        RandomListNode headNew = head.next;
+        for (RandomListNode node = head; node != null; node = node.next) {
+            RandomListNode nodeNew = node.next;
+            node.next = node.next.next;
+            nodeNew.next = (nodeNew.next != null) ? nodeNew.next.next : null;
+        }
+        return headNew;
     }
 
 }
+
+class RandomListNode {
+    int label;
+    RandomListNode next, random;
+    RandomListNode(int x) { this.label = x; }
+};
 
 class GridType {
     static int EMPTY = 0;
