@@ -5252,6 +5252,122 @@ public class Main {
         return headNew;
     }
 
+    public TreeNode removeNode(TreeNode root, int value) {
+        // write your code here
+        if (root == null) {
+            return null;
+        }
+
+        if (value > root.val) {
+            root.right = removeNode(root.right, value);
+        } else if (value < root.val) {
+            root.left = removeNode(root.left, value);
+        } else {
+            if (root.left == null && root.right == null) {
+                root = null;
+            } else if (root.right != null) {
+                root.val = successor(root);
+                root.right = removeNode(root.right, root.val);
+            } else {
+                root.val = predecessor(root);
+                root.left = removeNode(root.left, root.val);
+            }
+        }
+
+        return root;
+    }
+
+    private int successor(TreeNode node) {
+        node = node.right;
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node.val;
+    }
+
+    private int predecessor(TreeNode node) {
+        node = node.left;
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node.val;
+    }
+
+
+    Stack<TreeNode> upperStack = new Stack<>();
+    Stack<TreeNode> lowerStack = new Stack<>();
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        // write your code here
+        List<Integer> ans = new ArrayList<>();
+
+        TreeNode current = root;
+
+        while (current != null) {
+            upperStack.push(current);
+            current = current.left;
+        }
+
+        current = root;
+        while (current != null) {
+            lowerStack.push(current);
+            current = current.right;
+        }
+
+        while (!upperStack.isEmpty() && upperPeek() < target) {
+            moveUpper();
+        }
+
+        while (!lowerStack.isEmpty() && lowerPeek() >= target) {
+            moveLower();
+        }
+
+        for (int i = 0; i < k; i++) {
+            if (!upperStack.isEmpty() && !lowerStack.isEmpty()) {
+                if (upperPeek() - target < target - lowerPeek()) {
+                    ans.add(upperPeek());
+                    moveUpper();
+                } else {
+                    ans.add(lowerPeek());
+                    moveLower();
+                }
+            } else if (!upperStack.isEmpty()) {
+                ans.add(upperPeek());
+                moveUpper();
+            } else {
+                ans.add(lowerPeek());
+                moveLower();
+            }
+        }
+
+        return ans;
+    }
+
+    private int upperPeek() {
+        return upperStack.peek().val;
+    }
+
+    private int lowerPeek() {
+        return lowerStack.peek().val;
+    }
+
+    private void moveUpper() {
+        TreeNode current = upperStack.pop();
+        current = current.right;
+        while (current != null) {
+            upperStack.push(current);
+            current = current.left;
+        }
+    }
+
+    private void moveLower() {
+        TreeNode current = lowerStack.pop();
+        current = current.left;
+        while (current != null) {
+            lowerStack.push(current);
+            current = current.right;
+        }
+    }
+
 }
 
 class RandomListNode {
