@@ -6,9 +6,16 @@ import java.util.*;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        int[] A = {1,2,3};
-        int[] B = {4, 5};
-        mergeSortedArray(A, 3, B, 2);
+        Set<String> set = new HashSet<>();
+
+        set.add("hot");
+        set.add("dot");
+        set.add("dog");
+        set.add("lot");
+        set.add("log");
+
+
+        findLadders("hit","cog", set);
     }
 
     public String longestPalindrome(String s) {
@@ -5365,6 +5372,88 @@ public class Main {
         while (current != null) {
             lowerStack.push(current);
             current = current.right;
+        }
+    }
+
+    public static List<List<String>> findLadders(String start, String end, Set<String> dict) {
+        // write your code here
+        List<List<String>> result = new ArrayList<>();
+        Map<String, Integer> distance = new HashMap<>();
+        Map<String, List<String>> map = new HashMap<>();
+        dict.add(start);
+        dict.add(end);
+
+        for (String str : dict) {
+            map.put(str, new ArrayList<>());
+        }
+
+        findLaddersBFS(end, dict, distance, map);
+        List<String> currentList = new ArrayList<>();
+        currentList.add(start);
+        findLaddersDFS(start, end, distance, map, result, currentList);
+
+        return result;
+    }
+
+    private static void findLaddersBFS(String end,
+                                Set<String> dict,
+                                Map<String, Integer> distance,
+                                Map<String, List<String>> map) {
+
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(end);
+        distance.put(end, 0);
+
+        while (!queue.isEmpty()) {
+            String current = queue.poll();
+            int currentDistance = distance.get(current);
+            List<String> nextList = findNextList(current, dict);
+            for (String str : nextList) {
+                if (!distance.containsKey(str)) {
+                    distance.put(str, currentDistance + 1);
+                    queue.offer(str);
+                }
+                map.get(str).add(current);
+            }
+        }
+    }
+
+    private static List<String> findNextList(String current, Set<String> dict) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < current.length(); i++) {
+            for (char c = 'a'; c <= 'z'; c++) {
+                if (current.charAt(i) == c) {
+                    continue;
+                }
+
+                String next = current.substring(0, i) + c + current.substring(i + 1);
+                if (dict.contains(next)) {
+                    result.add(next);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static void findLaddersDFS(String start,
+                                String end,
+                                Map<String, Integer> distance,
+                                Map<String, List<String>> map,
+                                List<List<String>> result,
+                                List<String> currentList) {
+
+        if (start.equals(end)) {
+            result.add(new ArrayList<>(currentList));
+            return;
+        }
+
+        for (String n : map.get(start)) {
+            if (distance.containsKey(n) && distance.get(n) + 1 == distance.get(start)) {
+                currentList.add(n);
+                findLaddersDFS(n, end, distance, map, result, currentList);
+                currentList.remove(currentList.size() - 1);
+            }
         }
     }
 
