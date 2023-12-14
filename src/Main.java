@@ -5457,6 +5457,97 @@ public class Main {
         }
     }
 
+    public List<String> anagrams(String[] strs) {
+        // write your code here
+        final int ADDED = -1;
+        List<String> ans = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
+
+        if (strs.length == 0) {
+            return ans;
+        }
+
+        for (int i = 0; i < strs.length; i++) {
+            String str = sortString(strs[i]);
+
+            if (!map.containsKey(str)) {
+                map.put(str, i);
+            } else {
+                int lastWord = map.get(str);
+                if (lastWord != ADDED) {
+                    ans.add(strs[lastWord]);
+                    map.put(str, ADDED);
+                }
+                ans.add(strs[i]);
+            }
+        }
+        return ans;
+    }
+
+    private String sortString(String str) {
+        char[] charArr = str.toCharArray();
+        Arrays.sort(charArr);
+        return Arrays.toString(charArr);
+    }
+
+
+    class cNode {
+
+        public int value;
+        public int arrNum;
+        public int index;
+
+        public cNode(int value, int arrNum, int index) {
+            this.value = value;
+            this.arrNum = arrNum;
+            this.index = index;
+        }
+
+    }
+
+    static Comparator<cNode> compareNode = new Comparator<cNode>() {
+        public int compare(cNode o1, cNode o2) {
+            return o1.value - o2.value;
+        }
+
+    };
+
+    public int[] mergekSortedArrays(int[][] arrays) {
+        // write your code here
+        PriorityQueue<cNode> queue = new PriorityQueue<>(compareNode);
+        List<Integer> ans = new ArrayList<>();
+
+        for (int i = 0; i < arrays.length; i++) {
+            if (arrays[i].length == 0) {
+                continue;
+            }
+            queue.add(new cNode(arrays[i][0], i, 0));
+        }
+
+        while (!queue.isEmpty()) {
+            cNode node = queue.poll();
+
+            int value = node.value;
+            int arrIndex = node.arrNum;
+            int index = node.index;
+
+            ans.add(value);
+
+            if (index == arrays[arrIndex].length - 1) {
+                continue;
+            } else {
+                queue.add(new cNode(arrays[arrIndex][index + 1], arrIndex, index + 1));
+            }
+        }
+
+        return ans.stream().mapToInt(Integer::valueOf).toArray();
+    }
+
+    public int[] topk(int[] nums, int k) {
+        // write your code here
+
+    }
+
 }
 
 class RandomListNode {
