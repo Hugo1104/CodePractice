@@ -5544,8 +5544,24 @@ public class Main {
     }
 
     public int[] topk(int[] nums, int k) {
-        // write your code here
+        if (nums == null || nums.length == 0 || k == 0) {
+            return new int[0];
+        }
 
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        for (int num : nums) {
+            minHeap.offer(num);
+            if (minHeap.size() > k) {
+                minHeap.poll();
+            }
+        }
+
+        int[] topk = new int[k];
+        for (int i = k - 1; i >= 0; i--) {
+            topk[i] = minHeap.poll();
+        }
+
+        return topk;
     }
 
 }
