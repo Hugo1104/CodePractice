@@ -5582,6 +5582,14 @@ public class Main {
         return Arrays.copyOfRange(points, 0, k);
     }
 
+    public int climbStairs(int n) {
+        // write your code here
+        if(n == 0) return 0;
+        double sqrt_5 = Math.sqrt(5);
+        double fib_n = Math.pow((1 + sqrt_5) / 2, n + 1) - Math.pow((1 - sqrt_5) / 2,n + 1);
+        return (int)(fib_n / sqrt_5);
+    }
+
 }
 
 class RandomListNode {
