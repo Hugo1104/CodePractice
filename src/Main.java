@@ -5564,6 +5564,24 @@ public class Main {
         return topk;
     }
 
+    public Point[] kClosest(Point[] points, Point origin, int k) {
+        // write your code here
+        Arrays.sort(points, new Comparator<Point>() {
+            @Override
+            public int compare(Point o1, Point o2) {
+                if ((o1.x - origin.x) * (o1.x - origin.x) + (o1.y - origin.y) * (o1.y - origin.y) == (o2.x - origin.x) * (o2.x - origin.x) + (o2.y - origin.y) * (o2.y - origin.y)) {
+                    if (o1.x == o2.x) {
+                        return o1.y - o2.y;
+                    }
+                    return o1.x - o2.x;
+                }
+                return ((o1.x - origin.x) * (o1.x - origin.x) + (o1.y - origin.y) * (o1.y - origin.y)) - ((o2.x - origin.x) * (o2.x - origin.x) + (o2.y - origin.y) * (o2.y - origin.y));
+            }
+        });
+
+        return Arrays.copyOfRange(points, 0, k);
+    }
+
 }
 
 class RandomListNode {
@@ -5797,6 +5815,11 @@ class DirectedGraphNode {
 class Point {
     int x;
     int y;
+
+    Point() {
+        x = 0;
+        y = 0;
+    }
 
     Point(int x, int y) {
         this.x = x;
