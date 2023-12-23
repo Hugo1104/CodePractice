@@ -5715,6 +5715,84 @@ public class Main {
         return low;
     }
 
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        // write your code here
+        ListNode ans = new ListNode(-1);
+        ListNode pointer = ans;
+
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                pointer.next = l1;
+                l1 = l1.next;
+            } else {
+                pointer.next = l2;
+                l2 = l2.next;
+            }
+
+            pointer = pointer.next;
+        }
+
+        pointer.next = l1 == null ? l2 : l1;
+
+        return ans.next;
+    }
+
+
+    public int fastPower(int a, int b, int n) {
+        // write your code here
+        if (n == 0) {
+            return 1 % b;
+        }
+
+        long x = fastPower(a, b, n / 2);
+        x = x * x % b;
+        if (n % 2 == 1) {
+            x = x * a % b;
+        }
+
+        return (int) x;
+    }
+
+    public ListNode mergeKLists(List<ListNode> lists) {
+        // write your code here
+        PriorityQueue<Status> queue = new PriorityQueue<>();
+
+        for (ListNode node : lists) {
+            if (node != null) {
+                queue.offer(new Status(node.val, node));
+            }
+        }
+
+        ListNode head = new ListNode(0);
+        ListNode ptr = head;
+
+        while (!queue.isEmpty()) {
+            Status f = queue.poll();
+            ptr.next = f.pointer;
+            ptr = ptr.next;
+            if (f.pointer.next != null) {
+                queue.offer(new Status(f.pointer.next.val, f.pointer.next));
+            }
+        }
+
+        return head.next;
+    }
+
+    class Status implements Comparable<Status> {
+        int val;
+        ListNode pointer;
+
+        public Status(int val, ListNode node) {
+            this.val = val;
+            this.pointer = node;
+        }
+
+        @Override
+        public int compareTo(Status o) {
+            return this.val - o.val;
+        }
+    }
+
 }
 
 class RandomListNode {
