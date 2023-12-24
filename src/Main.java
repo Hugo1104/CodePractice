@@ -5793,6 +5793,71 @@ public class Main {
         }
     }
 
+    public double myPow(double x, int n) {
+        // write your code here
+        if (n == 0) {
+            return 1;
+        }
+
+        double ans = myPow(x, n / 2);
+
+        if (n % 2 == 0) {
+            return ans * ans;
+        } else {
+            return (n > 0) ? ans * ans * x : ans * ans / x;
+        }
+    }
+
+    public int kthSmallestSum(int[] a, int[] b, int k) {
+        // write your code here
+        int n = a.length;
+        int m = b.length;
+
+        int left = a[0] + b[0] - 1;
+        int right = a[n - 1] + b[m - 1] + 1;
+
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            long num = calc(mid, a, b);
+
+            if (num >= k) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+
+        return right;
+    }
+
+    private long calc(int x, int[] a, int[] b) {
+        int n = a.length;
+        int m = b.length;
+        long num = 0;
+
+        int start = 0, end = m - 1;
+
+        while (start <= n - 1) {
+            while (end >= 0) {
+                if (a[start] + b[end] > x) {
+                    end--;
+                } else {
+                    break;
+                }
+            }
+            num += end + 1;
+            start++;
+        }
+        return num;
+    }
+
+
+    public List<List<Integer>> twoSumVII(int[] nums, int target) {
+        // write your code here
+
+    }
+
+
 }
 
 class RandomListNode {
