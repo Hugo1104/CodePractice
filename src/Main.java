@@ -5922,6 +5922,152 @@ public class Main {
         return cur;
     }
 
+    public List<Integer> primeFactorization(int num) {
+        // write your code here
+        List<Integer> ans = new ArrayList<>();
+
+        for (int i = 2; i * i <= num ; i++) {
+            while (num % i == 0) {
+                num = num / i;
+                ans.add(i);
+            }
+        }
+
+        if (num != 1) {
+            ans.add(num);
+        }
+
+        return ans;
+    }
+
+    public int divide(int dividend, int divisor) {
+        // write your code here
+        boolean isNegative = false;
+
+        if ((dividend > 0 && divisor < 0) || (dividend < 0 && divisor > 0)) {
+            isNegative = true;
+        }
+
+        long ans = 0;
+        long Dividend = Math.abs((long) dividend);
+        long Divisor = Math.abs((long) divisor);
+
+        while (Dividend >= Divisor) {
+            long temp = Divisor;
+            long count = 1;
+
+            while (Dividend >= temp) {
+                Dividend -= temp;
+                ans += count;
+                count <<= 1;
+                temp <<= 1;
+            }
+        }
+
+        if (isNegative) {
+            ans = -ans;
+        }
+
+        long intMin = -(1 << 31);
+        long intMax = (1 << 31) - 1;
+
+        if (ans < intMin || ans > intMax) {
+            ans = intMax;
+        }
+
+        return (int) ans;
+    }
+
+    public double findMedian(int[][] nums) {
+        // write your code here
+        int n = getLength(nums);
+        if (n == 0) {
+            return 0.0;
+        }
+
+        if (n % 2 == 1) {
+            return (double) findKth(nums, n / 2 + 1);
+        }
+
+        return (double) findKth(nums, n / 2) / 2 + (double) findKth(nums, n / 2 + 1) / 2;
+    }
+
+    private int getLength(int[][] nums) {
+        int n = 0;
+        for (int[] num : nums) {
+            n += num.length;
+        }
+
+        return n;
+    }
+
+    private int findKth(int[][] arrays, int k) {
+        int start = Integer.MIN_VALUE;
+        int end = Integer.MAX_VALUE;
+
+        while (start + 1 < end) {
+            int mid = calculateMid(start, end);
+            if (lessOrEqual(arrays, mid) >= k) {
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }
+
+        if (lessOrEqual(arrays, start) >= k) {
+            return start;
+        }
+
+        return end;
+    }
+
+    private int calculateMid(int start, int end) {
+        if (start > 0 || end < 0) {
+            return start + ((end - start) >> 1);
+        } else {
+            return (start + end) >> 1;
+        }
+    }
+
+    private int lessOrEqual(int[][] arrays, int target) {
+        int count = 0;
+
+        for (int[] array : arrays) {
+            count += lessOrEqualArray(array, target);
+        }
+
+        return count;
+    }
+
+    private int lessOrEqualArray(int[] array, int target) {
+        if (array.length == 0) {
+            return 0;
+        }
+
+        int start = 0, end = array.length - 1;
+
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (array[mid] > target) {
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }
+
+        if (array[start] > target) {
+            return start;
+        }
+
+        if (array[end] > target) {
+            return end;
+        }
+
+        return array.length;
+    }
+
+
+
 
 }
 
