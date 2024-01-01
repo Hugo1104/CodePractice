@@ -4,7 +4,7 @@ import java.util.List;
 
 public class BSolution {
 }
-class Solution {
+class sSolution {
     /**
      * This method will be invoked first, you should design your own algorithm
      * to serialize a binary tree which denote by a root node to a string which
