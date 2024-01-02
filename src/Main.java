@@ -6066,7 +6066,78 @@ public class Main {
         return array.length;
     }
 
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        // write your code here
+        List<List<Integer>> ans = new ArrayList<>();
 
+        if (root == null) {
+            return ans;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        boolean isLeft = true;
+
+        while (!queue.isEmpty()) {
+            Deque<Integer> level = new LinkedList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (isLeft) {
+                    level.offerLast(node.val);
+                } else {
+                    level.offerFirst(node.val);
+                }
+
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+
+            ans.add(new LinkedList<>(level));
+            isLeft = !isLeft;
+        }
+
+        return ans;
+    }
+
+
+    public int[] twoSum(TreeNode root, int n) {
+        // write your code here
+        Set<Integer> visited = new HashSet<>();
+
+        if (root == null) {
+            return null;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                int curVal = node.val;
+                if (visited.contains(n - curVal)) {
+                    return new int[] {curVal, n - curVal};
+                }
+                visited.add(curVal);
+
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+        }
+
+        return null;
+    }
 
 
 }
