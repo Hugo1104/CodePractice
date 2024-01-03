@@ -6140,6 +6140,60 @@ public class Main {
     }
 
 
+    public List<List<Integer>> binaryTreePathSum3(ParentTreeNode root, int target) {
+        // write your code here
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null) {
+            return ans;
+        }
+
+        List<ParentTreeNode> nodeList = new ArrayList<>();
+        inorderHelper(root, nodeList);
+
+        for (ParentTreeNode node : nodeList) {
+            HashSet<ParentTreeNode> set = new HashSet<>();
+            btps3DFS(node, target, set, new ArrayList<>(), ans);
+        }
+
+        return ans;
+    }
+
+    private void inorderHelper(ParentTreeNode node, List<ParentTreeNode> list) {
+        if (node == null) {
+            return;
+        }
+
+        inorderHelper(node.left, list);
+        list.add(node);
+        inorderHelper(node.right, list);
+    }
+
+    private void btps3DFS(ParentTreeNode node,
+                          int target,
+                          HashSet<ParentTreeNode> set,
+                          List<Integer> current,
+                          List<List<Integer>> ans) {
+        if (node == null || set.contains(node)) {
+            return;
+        }
+
+        set.add(node);
+        current.add(node.val);
+        target -= node.val;
+        if (target == 0) {
+            ans.add(new ArrayList<>(current));
+        }
+
+        btps3DFS(node.left, target, set, current, ans);
+        btps3DFS(node.right, target, set, current, ans);
+        btps3DFS(node.parent, target, set, current, ans);
+
+        set.remove(node);
+        current.remove(current.size() - 1);
+        target += node.val;
+    }
+
+
 }
 
 class RandomListNode {
@@ -6182,6 +6236,7 @@ class Worker implements Comparable<Worker> {
 
 class ParentTreeNode {
     public ParentTreeNode parent, left, right;
+    public int val;
 
 }
 
