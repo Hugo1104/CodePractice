@@ -6193,6 +6193,10 @@ public class Main {
         target += node.val;
     }
 
+    public long permutationIndex(int[] a) {
+        // write your code here
+    }
+
 
 }
 
