@@ -6193,9 +6193,54 @@ public class Main {
         target += node.val;
     }
 
-    public long permutationIndex(int[] a) {
-        // write your code here
+    public long permutationIndex(int[] A) {
+        int n = A.length;
+        long factorial = 1;
+        long sum = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            int smaller = 0;
+            // 求出剩余可选择元素中小于自身的元素个数
+            for (int j = i + 1; j < n; j++) {
+                if(A[j] < A[i]){
+                    smaller++;
+                }
+            }
+            sum += smaller * factorial;
+            factorial *= (n - i);
+        }
+        return sum;
     }
+
+    public long permutationIndexII(int[] A) {
+        if (A == null || A.length == 0) return 0L;
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+        long factorial = 1;
+        long sum = 1;
+        long repeat = 1;
+        for (int i = A.length - 1; i >= 0; i--){
+            if(map.containsKey(A[i])){
+                map.put(A[i], map.get(A[i]) + 1);
+                repeat *= map.get(A[i]);
+            }else{
+                map.put(A[i], 1);
+            }
+
+
+            //find smaller value
+            int smaller = 0;
+            for(int j = i + 1; j < A.length; j++){
+                if(A[i] > A[j]){
+                    smaller++;
+                }
+            }
+            sum += factorial * smaller / repeat;
+            factorial *= (A.length - i);
+
+        }
+        return sum;
+    }
+
 
 
 }
