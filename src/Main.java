@@ -6241,8 +6241,74 @@ public class Main {
         return sum;
     }
 
+    public Map<Integer, Double> highFive(Record[] results) {
+        // Write your code here
+        Map<Integer, Double> ans = new HashMap<>();
+        if (results == null || results.length == 0) {
+            return ans;
+        }
 
+        Arrays.sort(results, new Comparator<Record>() {
+            @Override
+            public int compare(Record o1, Record o2) {
+                if (o1.id != o2.id) {
+                    return o1.id - o2.id;
+                }
 
+                return o2.score - o1.score;
+            }
+        });
+
+        for (int i = 0; i < results.length; i++) {
+            if (i == 0 || results[i].id != results[i - 1].id) {
+                populateMap(ans, results, i);
+            }
+        }
+
+        return ans;
+    }
+
+    private void populateMap(Map<Integer, Double> ans, Record[] results, int i) {
+        double sum = 0;
+        for (int j = i; j < i + 5; j++) {
+            sum += results[j].score;
+        }
+
+        ans.put(results[i].id, sum / 5);
+    }
+
+    class Record {
+        public int id, score;
+
+        public Record(int id, int score) {
+            this.id = id;
+            this.score = score;
+        }
+    }
+
+    public int intersectionOfArrays(int[][] arrs) {
+        // write your code here
+        if (arrs.length == 0) {
+            return 0;
+        }
+
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for (int[] arr : arrs) {
+            for (int x : arr) {
+                map.put(x, map.getOrDefault(x, 0) + 1);
+            }
+        }
+
+        int ans = 0;
+        for (int x : map.values()) {
+            if (x == arrs.length) {
+                ans++;
+            }
+        }
+
+        return ans;
+    }
 }
 
 class RandomListNode {
