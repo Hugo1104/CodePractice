@@ -6309,6 +6309,31 @@ public class Main {
 
         return ans;
     }
+
+/*
+    public int[] nextPermutation(int[] nums) {
+        // write your code here
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i--;
+        }
+
+        if (i >= 0) {
+            int j = nums.length - 1;
+            while (j >= 0 && nums[i] >= nums[j]) {
+                j--;
+            }
+            swap(nums, i, j);
+        }
+        reverse(nums, i + 1);
+        return nums;
+    }
+*/
+
+    public int[] letterCombinationsII(String[] queries, String[] dict) {
+        // write your code here
+
+    }
 }
 
 class RandomListNode {
