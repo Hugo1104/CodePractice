@@ -6332,7 +6332,39 @@ public class Main {
 
     public int[] letterCombinationsII(String[] queries, String[] dict) {
         // write your code here
+        Map<Character, Character> letterMap = new HashMap<>() {{
+            put('a', '2');put('b', '2');put('c', '2');
+            put('d', '3');put('e', '3');put('f', '3');
+            put('g', '4');put('h', '4');put('i', '4');
+            put('j', '5');put('k', '5');put('l', '5');
+            put('m', '6');put('n', '6');put('o', '6');
+            put('p', '7');put('q', '7');put('r', '7');put('s', '7');
+            put('t', '8');put('u', '8');put('v', '8');
+            put('w', '9');put('x', '9');put('y', '9');put('z', '9');
+        }};
 
+        Map<String, Integer> count = new HashMap<>();
+        int[] result = new int[queries.length];
+
+        for (String query : queries) {
+            count.put(query, 0);
+        }
+
+        for (String word : dict) {
+            String key = "";
+            for (int i = 0; i < word.length(); i++) {
+                key += letterMap.get(word.charAt(i));
+                if (count.containsKey(key)) {
+                    count.put(key, count.getOrDefault(key, 0) + 1);
+                }
+            }
+        }
+
+        for (int i = 0; i < queries.length; i++) {
+            result[i] = count.get(queries[i]);
+        }
+
+        return result;
     }
 }
 
